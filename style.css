@@ -1,0 +1,846 @@
+:root {
+  --color-dark-blue: #5374e0;
+  --color-brown: #4a2104;
+  --color-light: #eeffd1;
+  --color-grey: #bfbeb6;
+  --color-gold: #d4b719;
+  --color-light-blue: #8cd9ff;
+  --color-pink: #ea68e3;
+
+  /* Semantic defaults */
+  --color-background: var(--color-dark-blue);
+  --color-text: var(--color-brown);
+  --color-muted: var(--color-grey);
+  --color-accent: var(--color-pink);
+
+  --content-width: 660px;
+  --visual-width: 1200px;
+  --page-frame-width: 5vw;
+  /* Same horizontal edge as #hero .section-inner: frame plus the hero gutter, or the centered 1200px column when that is further in. */
+  --page-content-edge: max(calc(var(--page-frame-width) + 2vw), calc(50vw - var(--visual-width) / 2));
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  transition: background-color 0.8s ease, color 0.8s ease;
+  font-family: "Roboto Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "XOPQ" 96,
+    "XTRA" 468,
+    "YOPQ" 79,
+    "YTAS" 750,
+    "YTDE" -203,
+    "YTFI" 738,
+    "YTLC" 514,
+    "YTUC" 712;
+  font-size: 1rem;
+  line-height: 1.65;
+}
+.small-text-normal {
+  font-family: "Roboto Slab", serif;
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-style: normal;
+}
+.small-text-san-serif {
+  font-family: "Roboto Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 450;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1.3;
+}
+.caption-text-san-serif {
+  font-family: "Roboto Flex", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 1.3;
+}
+.title-text-large {
+  font-family: "Roboto Slab", serif;
+  font-weight: 600;
+  font-size: clamp(2rem, 3.5vw, 3rem);
+  color: var(--color-brown);
+}
+a { color: var(--color-accent); text-underline-offset: 0.25em; }
+a:focus-visible { outline: 3px solid var(--color-accent); outline-offset: 5px; }
+h1, h2, h3 { line-height: 1.15; font-weight: 500; overflow-wrap: break-word; }
+h1 {
+  max-width: 900px;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 800;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 80,
+    "GRAD" 0,
+    "XOPQ" 96,
+    "XTRA" 440,
+    "YOPQ" 79,
+    "YTAS" 750,
+    "YTDE" -203,
+    "YTFI" 738,
+    "YTLC" 514,
+    "YTUC" 712,
+    "wght" 800;
+  margin: 1rem 0;
+}
+h2 { max-width: var(--content-width); font-size: clamp(2rem, 3.5vw, 3rem); margin: 1rem 0 1.5rem; }
+h3 { font-size: 1.4rem; }
+p { max-width: var(--content-width); }
+[hidden] { display: none !important; }
+.skip-link { position: absolute; top: 0; left: 1rem; padding: 1rem; background: var(--color-light); transform: translateY(-150%); z-index: 10; }
+.page-frame {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: 20;
+  width: var(--page-frame-width);
+  background: var(--color-grey);
+  pointer-events: none;
+}
+.page-frame-left { left: 0; }
+.page-frame-right { right: 0; }
+.skip-link:focus { transform: translateY(0); }
+.story-section { min-height: 100vh; min-height: 100svh; padding: 6rem 2rem; }
+.section-inner { width: 100%; max-width: var(--visual-width); margin-inline: auto; }
+.section-number, .text-placeholder, .legend-label { color: var(--color-muted); }
+.section-number { font-size: 0.875rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.visual-placeholder { display: grid; place-items: center; min-width: 0; padding: 2rem; border: 1px dashed var(--color-grey); background: var(--color-light); color: var(--color-muted); text-align: center; }
+.visual-placeholder p { margin: 0; }
+.visual-placeholder span { font-size: 0.875rem; }
+.chart-container { width: 100%; min-height: 55vh; margin-block: 3rem; }
+.hero { display: flex; align-items: center; padding-block: 3rem; }
+.hero-visual { min-height: 36vh; margin-block: 2rem; }
+.scroll-indicator { display: inline-block; font-size: 0.875rem; }
+
+/* Only sections with a narrative sequence use sticky visuals. */
+.scrolly-layout { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: start; margin-top: 3rem; }
+.sticky-visual { position: sticky; top: 2rem; min-width: 0; }
+.sticky-visual .chart-container { margin: 0; }
+.landscape-visual { min-height: 65vh; }
+.scroll-content { min-width: 0; padding-block: 15vh; }
+.scroll-step { min-height: 65vh; padding: 2rem 1.5rem; border-left: 3px solid var(--color-grey); }
+.scroll-step.is-active { border-left-color: var(--color-accent); }
+.consequence-step { min-height: 65vh; padding: 0; border-left: none; }
+.consequence-step.is-active .consequence-card { border-left-color: var(--color-accent); }
+.consequence-card { min-height: auto; margin-bottom: 0; padding: 2rem 1.5rem; border: 1px solid var(--color-grey); border-left-width: 3px; background: var(--color-background); }
+.consequence-category { margin-top: 0; }
+.consequence-number { font-size: 3rem; line-height: 1.1; }
+.card-illustration { min-height: 130px; padding: 1rem; font-size: 0.875rem; }
+.nepal-visual { min-height: 65vh; gap: 0.75rem; align-content: center; }
+.nepal-layer { width: 100%; padding: 0.75rem; border: 1px solid var(--color-grey); font-size: 0.875rem; }
+.transition { display: grid; align-items: center; text-align: center; }
+.transition h2 { max-width: none; margin: 0; }
+.scenario-legend { display: flex; flex-wrap: wrap; gap: 0.75rem; list-style: none; padding: 0; }
+.scenario-legend li { border: 1px solid var(--color-grey); padding: 0.5rem 0.75rem; }
+#sources { padding: 4rem 2rem; }
+
+/* Stack on narrow/short screens so a large sticky panel cannot obscure text. */
+@media (max-width: 760px), (max-height: 600px) {
+  .story-section { padding: 4rem 1.25rem; }
+  .scrolly-layout { grid-template-columns: 1fr; gap: 2rem; }
+  .sticky-visual { position: static; }
+  .scroll-content { padding-block: 0; }
+  .scroll-step { min-height: 45vh; }
+  .consequence-step { min-height: 0; }
+  .consequence-card { min-height: auto; margin-bottom: 2rem; }
+  .chart-container, .landscape-visual, .nepal-visual { min-height: 45vh; }
+  #sources { padding-inline: 1.25rem; }
+}
+
+/* Keep this safeguard when motion is introduced later. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+
+/* Warming scrollytelling chart. Scoped to this visualization. */
+#warming .warming-scrolly {
+  --warming-track: 180vh;
+  position: relative;
+  width: calc(100% + 2 * var(--page-frame-width));
+  margin-top: clamp(2rem, 6vh, 4rem);
+  margin-left: calc(-1 * var(--page-frame-width));
+  margin-right: calc(-1 * var(--page-frame-width));
+}
+#warming .warming-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+#warming-title {
+  position: absolute;
+  top: 48px;
+  left: var(--page-content-edge);
+  right: var(--page-content-edge);
+  z-index: 3;
+  margin: 0;
+  pointer-events: none;
+}
+#warming-title .warming-title-line {
+  display: block;
+  opacity: 0;
+  transform: translateX(-35px);
+}
+/* Introduction follows the scrolly; the figure name stays inside the sticky chart. */
+#warming .warming-caption {
+  --warming-caption-gap: 0.3rem;
+  --warming-caption-bottom-gap: 1rem;
+  --warming-caption-offset-y: -60px;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: calc(var(--warming-caption-gap) + var(--warming-caption-offset-y));
+  margin-bottom: var(--warming-caption-bottom-gap);
+  padding-inline: max(2vw, calc(var(--page-content-edge) - var(--page-frame-width)));
+}
+#warming {
+  padding-bottom: 0;
+  padding-inline: var(--page-frame-width);
+}
+#warming .warming-caption-label {
+  --warming-caption-label-size: 14px;
+  position: absolute;
+  --warming-caption-offset-y: 8px;
+  top: calc(100% + var(--warming-caption-offset-y));
+  left: var(--page-content-edge);
+  max-width: 30vw;
+  margin: 0;
+  color: var(--color-grey);
+  font-size: var(--warming-caption-label-size);
+  letter-spacing: 0.04em;
+}
+#warming .warming-caption-note {
+  flex: 0 0 auto;
+  width: 50vw;
+  max-width: 50vw;
+  margin: 0;
+  color: var(--color-brown);
+  text-align: left;
+}
+#warming .warming-scroll-track {
+  height: var(--warming-track);
+  pointer-events: none;
+}
+#warming .warming-chart {
+  --warming-chart-offset-y: 50px;
+  position: relative;
+  width: 100%;
+  height: min(60vh, 680px);
+  transform: translateY(var(--warming-chart-offset-y));
+  margin: 0;
+  background: transparent;
+  border: 0;
+}
+#warming .warming-chart svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: "Roboto Flex", sans-serif;
+  user-select: none;
+}
+#warming .warming-temperature-area,
+#warming .warming-glacier-area {
+  stroke: none;
+  pointer-events: none;
+}
+#warming .warming-temperature-line,
+#warming .warming-glacier-line {
+  fill: none;
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  stroke-width: 15;
+}
+#warming .warming-temperature-line { stroke: var(--color-brown); }
+#warming .warming-glacier-line { stroke: var(--color-light); }
+#warming .warming-temperature-point { fill: var(--color-brown); }
+#warming .warming-glacier-point { fill: var(--color-light); }
+#warming .warming-axis path.domain {
+  fill: none;
+  stroke: var(--color-grey);
+  stroke-width: 4.5;
+  stroke-linecap: butt;
+}
+#warming .warming-axis .tick line {
+  fill: none;
+  stroke: var(--color-brown);
+  stroke-width: 4.5;
+  stroke-linecap: butt;
+}
+#warming .warming-axis .tick text {
+  fill: var(--color-brown);
+  font-size: 18px;
+}
+#warming .warming-chart.is-interactive .warming-pointer-layer { cursor: crosshair; }
+#warming .warming-hover-guide {
+  --guide-dash: 6;
+  --guide-spacing: 4;
+  display: none;
+  stroke-width: 4;
+  stroke-dasharray: var(--guide-dash) var(--guide-spacing);
+  stroke-linecap: butt;
+  pointer-events: none;
+}
+#warming .warming-hover-guide.is-visible { display: block; }
+#warming .warming-hover-guide.is-temperature { stroke: var(--color-gold); }
+#warming .warming-hover-guide.is-glacier { stroke: var(--color-grey); }
+#warming .warming-hover-marker {
+  display: none;
+  stroke: none;
+  pointer-events: none;
+}
+#warming .warming-hover-marker.is-visible { display: block; }
+#warming .warming-hover-marker.is-temperature { fill: var(--color-gold); }
+#warming .warming-hover-marker.is-glacier { fill: var(--color-grey); }
+#warming .warming-tooltip {
+  position: absolute;
+  z-index: 2;
+  width: max-content;
+  max-width: min(200px, calc(100% - 16px));
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  color: var(--color-brown);
+  font-size: 0.78rem;
+  line-height: 1.3;
+  letter-spacing: 0.03em;
+  pointer-events: none;
+}
+#warming .warming-tooltip p {
+  margin: 0;
+}
+#warming .warming-tooltip-year,
+#warming .warming-tooltip-value {
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+#warming .warming-tooltip-series {
+  margin-top: 0.35rem;
+  color: var(--color-brown);
+}
+#warming .warming-tooltip-value {
+  font-size: 0.95rem;
+}
+
+@media (max-width: 760px), (max-height: 600px) {
+  #warming-title {
+    top: 28px;
+  }
+  #warming .warming-caption {
+    flex-direction: column;
+    gap: 0.65rem;
+  }
+  #warming .warming-caption-label {
+    width: calc(100% - 2 * var(--page-content-edge));
+    max-width: none;
+  }
+  #warming .warming-caption-note {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #warming .warming-scrolly { margin-top: 2rem; }
+  #warming .warming-sticky {
+    position: relative;
+    height: auto;
+  }
+  #warming .warming-scroll-track { display: none; }
+  #warming-title .warming-title-line {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ===== Scrollytelling layout (formerly sketch.css) ===== */
+/* Scrollytelling sections and illustrations. */
+.draft-section { position: relative; margin-inline: var(--page-frame-width); }
+.draft-section .title-text-large { max-width: none; line-height: 1.14; }
+.draft-inner { width: min(1100px, 100%); margin-inline: auto; padding-inline: 2vw; }
+.draft-label { display: block; font-size: 13px; line-height: 1.4; letter-spacing: .025em; }
+.draft-lines { display: grid; gap: 9px; margin-top: 15px; }
+.draft-lines i { display: block; width: 100%; height: 2px; background: currentColor; opacity: .6; }
+.draft-lines i:last-child { width: 78%; }
+.draft-copy { max-width: 360px; width: 100%; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* 01 — The mountain and annotation positions from the sketch. */
+#hero.draft-section { display: block; min-height: 100svh; padding: clamp(36px, 6vh, 70px) 2vw 36px; }
+#hero.draft-section h1 { color: var(--color-light); max-width: 1050px; margin-top: 0; }
+#hero.draft-section h2 { margin-top: 26px; margin-bottom: 0; }
+.draft-hero-art { display: block; width: 100%; height: auto; max-height: 72vh; margin-top: -50px; overflow: visible; }
+.draft-intro-copy { display: flex; justify-content: flex-end; margin-top: -48px; padding-right: 4%; position: relative; }
+#hero.draft-section .scroll-indicator { color: var(--color-brown); margin-top: 30px; text-decoration: none; }
+#hero.draft-section .scroll-indicator span { padding-left: 18px; }
+
+/* 03 — Sticky retreat; large blue ice covers rising words and shrinks away. */
+/* Extra pinned scroll after shrinking, reserved for continued layered upward drift. */
+.retreat-section {
+  --retreat-tail-screens: 1.05;
+  height: calc(250svh + var(--retreat-tail-screens) * 100svh);
+  background: var(--color-dark-blue);
+}
+.retreat-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: var(--color-dark-blue); }
+/* Tint starts during entry; the gradient continues growing while the stage sticks. */
+.retreat-stage::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, var(--color-dark-blue) var(--retreat-blue-stop, 0%), var(--color-brown) var(--retreat-brown-stop, 40%)); opacity: var(--retreat-tint, 1); }
+.retreat-copy { position: absolute; z-index: 2; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8vh 4vw; text-align: center; }
+.retreat-copy .title-text-large { color: var(--color-dark-blue); margin: 0 0 40px; }
+.retreat-words { list-style: none; padding: 0; margin: 0; color: var(--color-light); font-size: clamp(26px, 4.1vw, 62px); line-height: 1.12; font-weight: 600; }
+.retreat-words li { will-change: transform, opacity; }
+.retreat-art { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.retreat-art-back { z-index: 1; }
+.retreat-art-front { z-index: 3; }
+.retreat-floe { will-change: transform; }
+.retreat-ice { fill: var(--color-dark-blue); will-change: transform; pointer-events: visiblePainted; cursor: default; touch-action: auto; user-select: none; }
+/* The transparent text panel must not intercept the shapes in the back layer. */
+.retreat-copy { pointer-events: none; }
+
+/* 04 — Real world map. */
+.map-section { background: var(--color-brown); color: var(--color-dark-blue); padding: 10vh 0 12vh; }
+.map-section .title-text-large { color: var(--color-dark-blue); margin: 0 0 44px; }
+.map-ice { position: absolute; inset: 0; z-index: 31; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
+.map-ice-shape { fill: var(--color-dark-blue); }
+
+/* GLACIER MAP — VISUAL TUNING */
+#glacier-map {
+  /* Presentation size only. 1 = current fit. Smaller reveals more brown around the globe. */
+  --glacier-map-scale: 0.8;
+  --map-ocean-fill: var(--color-dark-blue);
+  --map-land-fill: var(--color-light);
+  --map-region-fill: transparent;
+  --map-region-stroke: var(--color-grey);
+  /* SVG user units. The boundary layer copies this number onto the stroke. */
+  --map-region-stroke-width: 10;
+  --map-region-hover-fill: var(--color-grey);
+  --map-region-hover-fill-opacity: 1;
+  /* SVG user units. Marker positions are copied from these at load. */
+  --map-region-marker-radius: 28;
+  --map-region-marker-font-size: 24;
+  --map-region-pulse-duration: 4s;
+  position: relative;
+  z-index: 30;
+  width: 100vw;
+  max-width: none;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+}
+#glacier-map > svg {
+  /* The Robinson tips sit outside the file's viewBox. Keep that viewBox, but let the tips paint and fit them in the viewport. */
+  --map-view-width: 2528.5721;
+  --map-ocean-span: 2790;
+  display: block;
+  width: calc(100% * var(--map-view-width) / var(--map-ocean-span));
+  height: auto;
+  margin-inline: auto;
+  overflow: visible;
+  transform-box: view-box;
+  transform-origin: center;
+  transform: scale(var(--glacier-map-scale));
+}
+#glacier-map .oceanxx { fill: var(--map-ocean-fill); stroke: none; }
+#glacier-map .landxx,
+#glacier-map .coastxx,
+#glacier-map .limitxx,
+#glacier-map .antxx,
+#glacier-map .aq {
+  fill: var(--map-land-fill);
+  stroke: var(--map-land-fill);
+  stroke-width: 2px;
+}
+.glacier-region,
+.glacier-region-union {
+  fill: var(--map-region-fill);
+  fill-opacity: 1;
+  stroke: none;
+  cursor: pointer;
+}
+.glacier-region.has-seam-patch,
+.glacier-region.has-seam-patch.is-hovered {
+  fill: none;
+  stroke: none;
+  pointer-events: none;
+}
+.glacier-region.is-hovered,
+.glacier-region-union.is-hovered {
+  fill: var(--map-region-hover-fill);
+  fill-opacity: var(--map-region-hover-fill-opacity);
+}
+.glacier-region-boundaries {
+  fill: none;
+  stroke: var(--map-region-stroke);
+  stroke-linejoin: miter;
+  stroke-linecap: butt;
+  pointer-events: none;
+}
+path.glacier-region-boundaries {
+  /* Paused for now. Restore the line below to resume the grey–brown pulse. */
+  animation: none;
+  /* animation: glacier-region-boundary-pulse var(--map-region-pulse-duration) ease-in-out infinite; */
+}
+@keyframes glacier-region-boundary-pulse {
+  0% { stroke: var(--color-grey); }
+  50% { stroke: var(--color-brown); }
+  100% { stroke: var(--color-grey); }
+}
+@media (prefers-reduced-motion: reduce) {
+  path.glacier-region-boundaries {
+    animation: none;
+    stroke: var(--color-grey);
+  }
+}
+.glacier-region-marker { cursor: pointer; }
+.glacier-region-marker circle {
+  fill: var(--color-pink);
+  stroke: none;
+}
+.glacier-region-marker text {
+  fill: var(--color-brown);
+  font-family: "Roboto Flex", sans-serif;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  pointer-events: none;
+}
+.glacier-region-outline,
+.glacier-region-seam-stroke {
+  fill: none;
+  stroke: none;
+  pointer-events: none;
+}
+.glacier-region-readout {
+  position: absolute;
+  z-index: 2;
+  width: clamp(160px, 15vw, 230px);
+  max-width: calc(100vw - 16px);
+  margin: 0;
+  padding: 18px 20px 22px;
+  pointer-events: none;
+  background: var(--color-pink);
+  color: var(--color-brown);
+  text-align: center;
+}
+.map-readout-title {
+  margin: 0 0 14px;
+  font-size: clamp(16px, 1.5vw, 23px);
+  font-weight: 700;
+  line-height: 1.15;
+}
+.map-readout-triangle { display: block; width: 100%; height: auto; margin: 0 auto 16px; }
+.map-readout-remaining { fill: var(--color-light); }
+.map-readout-lost { fill: var(--color-brown); }
+.map-readout-percent { display: block; font: 800 clamp(17px, 1.5vw, 23px)/1.2 "Roboto Flex", sans-serif; }
+.map-readout-caption { display: block; margin-top: 2px; font: 400 clamp(12px, 1vw, 16px)/1.25 "Roboto Flex", sans-serif; }
+
+/* 05 — Whole spread sticks: blue illustration left, grey background and title right.
+   JS scrubs the illustration and moves only the narrative paragraphs. */
+.nepal-section { height: 610svh; background: var(--color-grey); }
+.nepal-stage { position: sticky; top: 0; height: 100svh; display: grid; grid-template-columns: 3fr 2fr; overflow: hidden; }
+.nepal-scene { position: relative; min-width: 0; height: 100%; background: var(--color-dark-blue); overflow: hidden; }
+.nepal-scene > svg { display: block; width: 100%; height: 100%; }
+.scene-label { font: 500 28px "Roboto Slab", serif; fill: var(--color-brown); }
+.scene-note { font: 16px "Roboto Flex", sans-serif; fill: var(--color-brown); }
+.scene-footnote { position: absolute; left: 5%; bottom: 20px; margin: 0; font-size: 11px; color: var(--color-brown); }
+.nepal-glacier-caption { z-index: 32; pointer-events: none; }
+#nepal-map-layer, #nepal-mountain-layer, #nepal-mountain-camera, #nepal-ice, #nepal-village-layer, .falling-rock, .village-piece { will-change: transform, opacity; }
+.nepal-narrative { display: flex; flex-direction: column; padding: clamp(28px, 5vh, 64px) 10%; background: var(--color-grey); min-width: 0; }
+.nepal-narrative .title-text-large { color: var(--color-dark-blue); font-size: clamp(25px, 3vw, 45px); margin: 0; flex: 0 0 auto; }
+.nepal-stories { position: relative; flex: 1; min-height: 0; margin-top: 7vh; }
+.nepal-story { position: absolute; top: 0; left: 0; width: 100%; max-height: 100%; overflow-y: auto; }
+.nepal-story h3 { margin: 0 0 18px; font-size: 24px; }
+.nepal-story p { margin: 0 0 .85em; max-width: none; font-size: clamp(14px, 1.12vw, 17px); line-height: 1.5; }
+.nepal-story p:last-child { margin-bottom: 0; }
+.nepal-story .draft-label { font-size: 12px; }
+.nepal-story .draft-lines { gap: 13px; }
+.nepal-progress { display: flex; gap: 8px; padding-top: 24px; }
+.nepal-progress i { width: 28px; height: 3px; background: var(--color-brown); opacity: .22; }
+.nepal-progress i.is-active { opacity: 1; background: var(--color-dark-blue); }
+
+/* 06 — Pictogram composition only, deliberately no invented counts. */
+.impact-section { background: var(--color-brown); color: var(--color-dark-blue); padding: 9vh 0 7vh; }
+.impact-marks { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 14px 18px; padding-inline: 4%; }
+.impact-mark { appearance: none; padding: 0; margin: 0; border: 0; background: transparent; color: var(--color-pink); cursor: pointer; transform: rotate(-7deg); }
+.impact-mark svg { display: block; width: 100%; max-height: 60px; }
+.impact-mark path { fill: currentColor; }
+.impact-mark-1 { color: var(--color-gold); }
+.impact-mark-2 { color: var(--color-grey); }
+.impact-mark:is(:hover, :focus-visible) { transform: translateY(-5px) rotate(7deg); outline: 2px solid var(--color-light); outline-offset: 5px; }
+#impact-detail { min-height: 22px; margin: 32px 0; text-align: center; font-size: 13px; max-width: none; color: var(--color-grey); }
+.impact-section .title-text-large { text-align: center; color: var(--color-dark-blue); font-size: clamp(25px, 3.1vw, 43px); line-height: 1.2; }
+.impact-deaths { color: var(--color-pink); }
+.impact-injuries { color: var(--color-gold); }
+.impact-missing { color: var(--color-grey); }
+.impact-note { max-width: none; font-size: 12px; text-align: center; color: var(--color-grey); }
+#sources.draft-sources { margin-inline: var(--page-frame-width); padding: 30px 2vw 45px; background: var(--color-brown); color: var(--color-grey); }
+.draft-sources h2 { font-size: 18px; margin: 0 0 12px; }
+.draft-sources p { font-size: 12px; }
+
+/* Fallback: all content remains available without scripts. */
+html:not(.sketch-motion) .retreat-section { height: 100svh; }
+html:not(.sketch-motion) .retreat-art { opacity: .15; }
+html:not(.sketch-motion) .nepal-section { height: auto; }
+html:not(.sketch-motion) .nepal-stage { position: relative; height: auto; min-height: 100svh; }
+html:not(.sketch-motion) .nepal-story { max-height: none; overflow: visible; position: static; margin-block: 45px; }
+html:not(.sketch-motion) #nepal-map-layer { display: none; }
+html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
+
+@media (max-width: 760px) {
+  #hero.draft-section { min-height: auto; padding-top: 36px; }
+  #hero.draft-section h1 { font-size: clamp(30px, 7vw, 48px); }
+  #hero.draft-section h2 { font-size: 27px; }
+  .draft-hero-art { margin-top: 15px; }
+  .draft-intro-copy { margin-top: 10px; padding: 0; }
+  .draft-intro-copy .draft-copy { width: 65%; }
+  .retreat-copy { padding-inline: 4%; }
+  .retreat-copy .title-text-large { font-size: 28px; }
+  .retreat-words { font-size: clamp(24px, 5.5vw, 38px); line-height: 1.25; }
+  .map-section { padding-block: 65px; }
+  .map-section .title-text-large { font-size: 27px; }
+  .draft-label { font-size: 11px; }
+  .nepal-stage { grid-template-columns: 1fr 1fr; }
+  .nepal-narrative { padding: 30px 9%; }
+  .nepal-narrative .title-text-large { font-size: clamp(20px, 4.7vw, 30px); }
+  .nepal-story h3 { font-size: 18px; }
+  .scene-footnote { font-size: 9px; padding-right: 10px; }
+  .nepal-progress { gap: 5px; }
+  .nepal-progress i { width: 20px; }
+  .impact-marks { grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 10px; }
+  .impact-mark svg { max-height: 40px; }
+  .impact-section .title-text-large { font-size: 24px; }
+}
+@media (max-height: 550px) {
+  .nepal-narrative { padding-block: 18px; }
+  .nepal-narrative .title-text-large { font-size: 24px; }
+  .nepal-stories { margin-top: 12px; }
+  .nepal-story { top: 0; }
+  .nepal-story h3 { font-size: 18px; margin-bottom: 10px; }
+  .retreat-copy .title-text-large { font-size: 26px; margin-bottom: 20px; }
+  .retreat-words { font-size: 30px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .retreat-section { height: auto; }
+  .retreat-stage { position: relative; min-height: 700px; }
+  .retreat-art { display: none; }
+  .nepal-section { height: auto; }
+  .nepal-stage { position: relative; height: auto; min-height: 100svh; }
+  .nepal-story { max-height: none; overflow: visible; position: static; margin-block: 50px; opacity: 1 !important; transform: none !important; }
+  .nepal-scene { min-height: 850px; }
+  .nepal-progress { display: none; }
+}
+
+/* ===== Region panel (formerly region-panel.css) ===== */
+/* 地图 → region panel：动效时间和布局都在这里调整。 */
+#glacier-map {
+  --region-fade-duration: 450ms;
+  --region-panel-delay: 180ms;
+}
+.region-panel-map-detail {
+  opacity: 1;
+  transition: opacity var(--region-fade-duration) ease;
+}
+/* Panel state overrides the inline opacity written by the Nepal scroll camera.
+   Keep only the opaque ocean silhouette behind the panel, with no map details. */
+#glacier-map.is-region-panel-open .region-panel-map-detail { opacity: 0 !important; }
+#glacier-map.is-region-panel-open > svg { pointer-events: none; }
+#glacier-map.is-region-panel-open .glacier-region-readout { display: none; }
+.glacier-region-marker:focus-visible circle {
+  stroke: var(--color-brown);
+  stroke-width: 8;
+}
+.glacier-region-panel {
+  position: absolute;
+  z-index: 4;
+  container-type: inline-size;
+  color: var(--color-brown);
+  opacity: 0;
+  touch-action: pan-y;
+  pointer-events: none;
+  transition: opacity var(--region-fade-duration) ease;
+}
+.glacier-region-panel[hidden] { display: none; }
+.is-region-panel-open .glacier-region-panel { opacity: 1; pointer-events: auto; transition-delay: var(--region-panel-delay); }
+.glacier-region-panel button {
+  appearance: none;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.glacier-region-panel button:focus-visible { outline: 2px solid var(--color-light); outline-offset: 3px; }
+.region-panel-content {
+  position: absolute;
+  inset: 8% 20% 7%;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.2cqw;
+  text-align: center;
+}
+.region-panel-heading { flex: 0 0 auto; width: 100%; font-size: clamp(12px, 2.35cqw, 32px); line-height: 1.15; }
+.region-panel-heading p { margin: 0 0 .7cqw; max-width: none; }
+.region-panel-heading h3 { margin: 0; font: inherit; }
+.region-panel-triangles {
+  display: grid;
+  grid-template-columns: repeat(var(--triangle-columns, 9), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--triangle-rows, 6), minmax(0, 1fr));
+  height: 26cqw;
+  gap: .65cqw;
+  width: 66%;
+  min-height: 0;
+  max-height: 26cqw;
+  margin-top: 1cqw;
+  overflow: visible;
+}
+.region-panel-triangle { display: block; min-width: 0; min-height: 0; }
+.region-panel-triangle svg { display: block; width: 100%; height: 100%; }
+.region-triangle-base { fill: var(--color-light); }
+.region-triangle-loss { fill: var(--color-brown); }
+.region-panel-unit, .region-panel-percent { margin: 0; max-width: none; flex: 0 0 auto; }
+.region-panel-unit { font-size: clamp(8px, 1.2cqw, 15px); line-height: 1.25; }
+.region-panel-percent { font-size: clamp(10px, 1.8cqw, 24px); line-height: 1.25; margin-top: .5cqw; }
+.region-panel-legend { display: flex; justify-content: center; gap: 1.5cqw; font-size: clamp(8px, 1.2cqw, 15px); line-height: 1.2; }
+.region-panel-legend[hidden] { display: none; }
+.region-panel-legend span { display: flex; align-items: center; gap: .4cqw; }
+.region-panel-legend i { width: 1.2cqw; height: 1.1cqw; clip-path: polygon(50% 0, 100% 100%, 0 100%); }
+.region-triangle-lost { background: var(--color-brown); }
+.region-triangle-remained { background: var(--color-light); }
+.glacier-region-panel .region-panel-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: max(40px, 5cqw);
+  height: max(40px, 5cqw);
+  display: grid;
+  place-items: center;
+  --arrow-stroke: clamp(2px, .25cqw, 3px);
+  border: var(--arrow-stroke) solid var(--color-brown);
+  border-radius: 50%;
+  color: var(--color-brown);
+  transition: background-color 220ms ease, color 220ms ease;
+}
+/* Symmetric SVG geometry centers the visible arrow, without font baseline offset. */
+.region-panel-arrow svg { display: block; width: 60%; height: 60%; pointer-events: none; }
+.region-panel-arrow polyline {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: var(--arrow-stroke);
+  vector-effect: non-scaling-stroke;
+  stroke-linejoin: miter;
+}
+@media (hover: hover) {
+  .glacier-region-panel .region-panel-arrow:hover {
+    background-color: var(--color-brown);
+    color: var(--color-light);
+  }
+}
+.glacier-region-panel .region-panel-arrow:focus-visible {
+  background-color: var(--color-brown);
+  color: var(--color-light);
+}
+.glacier-region-panel .region-panel-arrow:active {
+  background-color: var(--color-pink);
+  color: var(--color-brown);
+  transition-duration: 60ms;
+}
+.region-panel-prev { left: 4%; }
+.region-panel-next { right: 4%; }
+/* Hover/focus annotation stays legible at any globe size. */
+.region-mass-annotation {
+  position: fixed;
+  z-index: 1000;
+  max-width: min(290px, calc(100vw - 16px));
+  padding: 10px 14px;
+  background: var(--color-grey);
+  color: var(--color-brown);
+  font-size: 14px;
+  line-height: 1.45;
+  pointer-events: none;
+  white-space: pre-line;
+}
+.region-mass-annotation strong, .region-mass-annotation span { display: block; }
+.region-mass-annotation strong { margin-bottom: 4px; font-weight: 650; }
+.region-panel-content { pointer-events: none; }
+.region-panel-content > * { pointer-events: auto; }
+.glacier-region-panel:focus { outline: none; }
+.glacier-region-panel .region-panel-triangle { cursor: help; line-height: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .region-panel-map-detail, .glacier-region-panel, .glacier-region-panel .region-panel-arrow { transition: none; }
+}
+
+/* World map → Nepal: scroll-scrubbed bridge, followed by the original story. */
+.has-map-journey { padding-bottom: 0; }
+.map-journey {
+  --map-journey-screens: 3.4; /* 总长度；减去固定的一屏后是动画滚动距离 */
+  height: calc(var(--map-journey-screens) * 100svh);
+  position: relative;
+}
+.map-journey-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  /* Keep the grid track inside the page; the wider map overflows equally on both sides. */
+  grid-template-columns: minmax(0, 1fr);
+  place-items: center;
+  overflow: hidden;
+  isolation: isolate;
+}
+.map-journey-stage #glacier-map {
+  width: min(100vw, 225svh);
+  margin: 0;
+  grid-area: 1 / 1;
+}
+.map-journey-stage .map-journey-nepal-preview {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  color: var(--color-brown);
+  opacity: 0;
+  pointer-events: none;
+}
+.map-journey-nepal-preview .nepal-scene,
+.map-journey-nepal-preview .nepal-narrative { min-height: 0; }
+#glacier-map .map-journey-country { stroke: none; }
+#glacier-map.is-map-journey-active { pointer-events: none; }
+#glacier-map.is-map-journey-active .glacier-regions-layer { transition: none; }
+#glacier-map.is-map-journey-active .glacier-region-readout { display: none; }
+.nepal-after-map-journey { margin-top: -100svh; }
+@media (prefers-reduced-motion: reduce) {
+  .has-map-journey { padding-bottom: 12vh; }
+  .map-journey { height: auto; }
+  .map-journey-stage { position: relative; height: auto; overflow: visible; }
+  .map-journey-nepal-preview { display: none; }
+  .nepal-after-map-journey { margin-top: 0; }
+}
+
+html:not(.sketch-motion) .map-journey { height: auto; }
+html:not(.sketch-motion) .map-journey-stage { position: relative; height: auto; }
+html:not(.sketch-motion) .nepal-after-map-journey { margin-top: 0; }

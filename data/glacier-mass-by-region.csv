@@ -1,0 +1,20 @@
+region_id,region,mass_2000_gt,mass_change_2000_2024_gt,mass_lost_2000_2024_gt,mass_2024_gt,mass_lost_percent
+1,Alaska,16497,-1473.86,1473.86,15023.14,8.93
+2,Western Canada and USA,350,-221.85,221.85,128.15,63.38
+3,Arctic Canada north,24105,-730.24,730.24,23374.76,3.03
+4,Arctic Canada south,7648,-552.24,552.24,7095.76,7.22
+5,Greenland periphery,12525,-850.48,850.48,11674.52,6.79
+6,Iceland,3372,-199.08,199.08,3172.92,5.9
+7,Svalbard and Jan Mayen,6507,-331.08,331.08,6175.92,5.09
+8,Scandinavia,275,-40.03,40.03,234.97,14.56
+9,Russian Arctic,11934,-384.43,384.43,11549.57,3.22
+10,North Asia,137,-32.52,32.52,104.48,23.74
+11,Central Europe,122,-47.33,47.33,74.67,38.8
+12,Caucasus and Middle East,50,-17.68,17.68,32.32,35.36
+13,Central Asia,2946,-251.63,251.63,2694.37,8.54
+14,South Asia west,2583,-134.66,134.66,2448.34,5.21
+15,South Asia east,816,-176.52,176.52,639.48,21.63
+16,Low latitudes,90,-20.4,20.4,69.6,22.67
+17,Southern Andes,4772,-630.79,630.79,4141.21,13.22
+18,New Zealand,66,-19.99,19.99,46.01,30.29
+19,Antarctic and subantarctic islands,26336,-427.66,427.66,25908.34,1.62

@@ -1,0 +1,20 @@
+region_id,region_name,mass_loss_percent_of_2000,start_year,end_year,source
+01,Alaska,8.8,2000,2023,GlaMBIE
+02,Western Canada and USA,22.8,2000,2023,GlaMBIE
+03,Arctic Canada North,3.0,2000,2023,GlaMBIE
+04,Arctic Canada South,7.3,2000,2023,GlaMBIE
+05,Greenland Periphery,6.7,2000,2023,GlaMBIE
+06,Iceland,5.9,2000,2023,GlaMBIE
+07,Svalbard and Jan Mayen,5.0,2000,2023,GlaMBIE
+08,Scandinavia,14.4,2000,2023,GlaMBIE
+09,Russian Arctic,3.2,2000,2023,GlaMBIE
+10,North Asia,23.1,2000,2023,GlaMBIE
+11,Central Europe,38.7,2000,2023,GlaMBIE
+12,Caucasus and Middle East,35.3,2000,2023,GlaMBIE
+13,Central Asia,8.5,2000,2023,GlaMBIE
+14,South Asia West,5.0,2000,2023,GlaMBIE
+15,South Asia East,21.4,2000,2023,GlaMBIE
+16,Low Latitudes,20.2,2000,2023,GlaMBIE
+17,Southern Andes,12.8,2000,2023,GlaMBIE
+18,New Zealand,29.3,2000,2023,GlaMBIE
+19,Antarctic and Subantarctic,1.5,2000,2023,GlaMBIE

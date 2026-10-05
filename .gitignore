@@ -1,0 +1,18 @@
+# Operating-system metadata
+.DS_Store
+._*
+Thumbs.db
+Desktop.ini
+
+# Local editor settings, caches and temporary files
+.vscode/
+.idea/
+.cache/
+__pycache__/
+*.swp
+*.swo
+*~
+*.tmp
+
+# Existing local backup; not part of the website
+/work/before-sketch-draft-20261003/
