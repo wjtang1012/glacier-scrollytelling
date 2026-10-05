@@ -62,7 +62,7 @@
     countryPath.setAttribute('fill', 'var(--color-grey)');
     countryPath.setAttribute('class', 'nepal-country-shape');
     countryGroup.append(countryPath);
-    originalMap.querySelector('path').replaceWith(countryGroup);
+    originalMap.prepend(countryGroup);
     // Use the same geographic projection as the world map. The triangle's
     // bottom-center is the location anchor (longitude first, latitude second).
     const projection = svg.glacierProjection;
@@ -72,7 +72,8 @@
     const details = document.createElementNS(ns, 'g');
     details.setAttribute('class', 'nepal-country-details');
     details.setAttribute('pointer-events', 'none');
-    const mountainMark = originalMap.querySelector(':scope > path');
+    const mountainMark = document.createElementNS(ns, 'path');
+    mountainMark.setAttribute('fill', 'var(--color-brown)');
     mountainMark.setAttribute('class', 'nepal-location-marker');
     mountainMark.setAttribute('d', 'M-1.5 0 L0 -2.598 L1.5 0 Z');
     mountainMark.setAttribute('transform', `translate(${markerX} ${markerY})`);
@@ -113,8 +114,8 @@
     previewMap.querySelector('.nepal-country-details').remove();
     preview.querySelector('.nepal-glacier-caption').remove();
     const previewCountry = preview.querySelector('.nepal-country-shape');
-    preview.querySelector('#nepal-mountain-layer').style.opacity = '0';
-    preview.querySelector('#nepal-village-layer').style.opacity = '0';
+    preview.querySelector('#nepal-mountain-layer').remove();
+    preview.querySelector('#nepal-village-layer').remove();
     preview.querySelectorAll('.nepal-story').forEach((story, index) => {
       story.style.opacity = index === 0 ? '1' : '0';
       story.style.visibility = index === 0 ? 'visible' : 'hidden';

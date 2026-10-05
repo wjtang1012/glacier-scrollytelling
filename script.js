@@ -1,39 +1,3 @@
-// Each scroll-content group manages its own steps independently.
-// Read section.dataset.activeStep to connect a future visual to the narrative.
-// Continuous scroll progress may be added later for animations that need
-// scrubbing, such as the Nepal rock/ice collapse or glacier retreat.
-if ('IntersectionObserver' in window) {
-  document.querySelectorAll('.scroll-content').forEach((content) => {
-    const steps = Array.from(content.querySelectorAll('.scroll-step'));
-    const section = content.closest('.story-section');
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (!entry.isIntersecting) return;
-
-        steps.forEach((step) => {
-          step.classList.toggle('is-active', step === entry.target);
-        });
-        section.dataset.activeStep = entry.target.dataset.step;
-      });
-    }, {
-      // Activate when a step crosses the middle band of the viewport.
-      rootMargin: '-40% 0px -40% 0px',
-      threshold: 0
-    });
-
-    steps.forEach((step) => observer.observe(step));
-  });
-}
-
-// Warming uses its own continuous scroll progress in initWarmingChart().
-// Future D3 charts: load verified CSVs into #mass-chart.
-// World glacier map: initGlacierMap() draws the aligned regions into #glacier-map.
-// Future SVG manipulation: load assets/svg/ and connect named layers to steps.
-// Future Nepal sequence: connect #nepal data-active-step to #nepal-visual [data-state].
-// Future scenario interaction: connect the four warming scenarios to
-// #extinction-chart and #scenario-comparison after verified data is available.
-
 // Combined warming chart: temperature anomaly and cumulative glacier mass loss.
 // Scroll progress is local to #warming and does not replace the step observer above.
 function initWarmingChart() {
