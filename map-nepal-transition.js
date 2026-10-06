@@ -99,6 +99,7 @@
     // layout/scroll jump on refresh or on a slow map load.
     const journey = mapSection.querySelector('.map-journey');
     const stage = journey.querySelector('.map-journey-stage');
+    const mapIntro = stage.querySelector('.global-map-intro');
     mapSection.classList.add('has-map-journey');
     nepal.classList.add('nepal-after-map-journey');
 
@@ -290,6 +291,11 @@
         stage.style.opacity = '';
         host.classList.remove('is-map-journey-active');
         svg.removeAttribute('aria-hidden');
+        if (mapIntro) {
+          mapIntro.style.visibility = '';
+          mapIntro.style.opacity = '';
+          mapIntro.removeAttribute('aria-hidden');
+        }
         updateGlaciers(0);
         return;
       }
@@ -308,6 +314,17 @@
       const x = mix(mix(cx, geometry.center.x, zoom), geometry.destination.x, left);
       const y = mix(mix(cy, geometry.center.y, zoom), geometry.destination.y, left);
       camera.setAttribute('transform', `translate(${x} ${y}) scale(${z}) translate(${-cx} ${-cy})`);
+      if (mapIntro) {
+        const text = mapIntro.getBoundingClientRect();
+        const oceanNode = svg.querySelector('#ocean');
+        const globe = oceanNode && oceanNode.getBoundingClientRect();
+        const covered = !!(globe && text.height
+          && globe.top <= text.top && globe.bottom >= text.bottom
+          && globe.left < text.right && globe.right > text.left);
+        mapIntro.style.visibility = covered ? 'hidden' : '';
+        mapIntro.style.opacity = covered ? '0' : '';
+        mapIntro.toggleAttribute('aria-hidden', covered);
+      }
       regions.style.opacity = String(1 - phase(p, TIMING.outlines));
       world.style.opacity = String(1 - phase(p, TIMING.worldFade));
       sourceNepal.style.visibility = p > 0 ? 'hidden' : '';
@@ -326,9 +343,11 @@
       nepal.inert = p < 1;
       stage.style.visibility = p >= 1 ? 'hidden' : '';
       stage.style.opacity = p >= 1 ? '0' : '1';
-      const active = p > 0;
-      host.classList.toggle('is-map-journey-active', active);
-      if (active) {
+      // Zoom starts while region outlines and number labels are still fading.
+      // Keep hover and clicks until that fade is complete.
+      const detailsFaded = phase(p, TIMING.outlines) >= 1;
+      host.classList.toggle('is-map-journey-active', detailsFaded);
+      if (detailsFaded) {
         svg.setAttribute('aria-hidden', 'true');
         markers.forEach((marker) => marker.setAttribute('tabindex', '-1'));
         const readout = host.querySelector('.glacier-region-readout');

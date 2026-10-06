@@ -690,7 +690,7 @@ function initWarmingChart() {
       .attr('r', 10)
       .attr('aria-hidden', 'true');
     const tip = existingTip || document.createElement('div');
-    tip.className = 'warming-tooltip';
+    tip.className = `warming-tooltip ${seriesClass}`;
     tip.setAttribute('role', 'status');
     tip.setAttribute('aria-live', 'polite');
     tip.setAttribute('aria-atomic', 'true');
@@ -701,7 +701,7 @@ function initWarmingChart() {
     seriesName.className = 'warming-tooltip-series';
     const value = document.createElement('p');
     value.className = 'warming-tooltip-value';
-    tip.replaceChildren(year, seriesName, value);
+    tip.replaceChildren(year, value, seriesName);
     if (!existingTip) chart.append(tip);
     return {
       series,
@@ -777,7 +777,7 @@ function initWarmingChart() {
   }
 
   function placeTooltip(reader, chartX, chartY) {
-    // Keep mass annotations close to their own curve, below the temperature line.
+    // Mass panels stay above their curve, including above the SVG bounds when needed.
     const pointGap = reader.series === 'glacier' ? 10 : 18;
     const curveGap = reader.series === 'glacier' ? 4 : 12;
     const topPad = 16;
@@ -803,7 +803,7 @@ function initWarmingChart() {
       if (requiredTop < top) top = requiredTop;
     }
 
-    if (top < topPad) {
+    if (reader.series !== 'glacier' && top < topPad) {
       top = topPad;
       const bottom = top + tipHeight;
       const overlaps = (candidateLeft) => {
@@ -820,6 +820,12 @@ function initWarmingChart() {
             break;
           }
         }
+      }
+      // A taller panel may not fit above the curve. Keep the marker visible
+      // by placing the panel just below this curve instead of covering it.
+      if (overlaps(left)) {
+        const belowCurve = highestCurveY(samples.map((p) => ({ x: p.x, y: -p.y })), left - xPad, left + tipWidth + xPad);
+        top = Math.max(anchor.y + 20, belowCurve === null ? 0 : -belowCurve + clearance);
       }
     }
 
@@ -2288,3 +2294,105 @@ async function readMapAsset(url, label) {
 }
 
 initGlacierMap();
+
+// Consequences section only. Macro paths are tuned here.
+// Offsets are pixels from each phrase's CSS anchor. Progress is 0–1
+// across the sticky scroll of #consequences. Opacity is scroll-only.
+const CONSEQUENCE_FLOAT_CONFIG = {
+  fadeSpan: 0.18,
+  mobileTravelScale: 0.48,
+  // Short drift around the ring. endRotation sets each keyword's resting tilt in degrees.
+  seaLevel: { startX: -6, startY: 18, endX: 0, endY: 0, startRotation: -9, endRotation: -7, startProgress: 0.00, endProgress: 0.70, maxOpacity: .9 },
+  freshwater: { startX: 0, startY: 22, endX: 0, endY: 0, startRotation: 6, endRotation: 4, startProgress: 0.08, endProgress: 0.78, maxOpacity: .9 },
+  hazards: { startX: 6, startY: 18, endX: 0, endY: 0, startRotation: -7, endRotation: -5, startProgress: 0.16, endProgress: 0.86, maxOpacity: .9 },
+  ecosystem: { startX: -4, startY: 20, endX: 0, endY: 0, startRotation: -6, endRotation: -4, startProgress: 0.24, endProgress: 0.94, maxOpacity: .9 },
+  habitat: { startX: 4, startY: 20, endX: 0, endY: 0, startRotation: 8, endRotation: 6, startProgress: 0.32, endProgress: 1.00, maxOpacity: .9 },
+  waterQuality: { startX: 6, startY: 18, endX: 0, endY: 0, startRotation: 9, endRotation: 7, startProgress: 0.36, endProgress: 1.00, maxOpacity: .9 },
+  food: { startX: -6, startY: 20, endX: 0, endY: 0, startRotation: -7, endRotation: -5, startProgress: 0.40, endProgress: 1.00, maxOpacity: .9 },
+  hydropower: { startX: 0, startY: 22, endX: 0, endY: 0, startRotation: -8, endRotation: -6, startProgress: 0.44, endProgress: 1.00, maxOpacity: .9 },
+  heritage: { startX: 4, startY: 18, endX: 0, endY: 0, startRotation: 7, endRotation: 5, startProgress: 0.48, endProgress: 1.00, maxOpacity: .9 }
+};
+
+function initConsequenceFloats() {
+  const section = document.getElementById('consequences');
+  if (!section || !section.querySelector('.consequence-float')) return;
+
+  const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const floats = [...section.querySelectorAll('.consequence-float')];
+  const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+
+  function travelScale() {
+    return window.innerWidth <= 760 ? CONSEQUENCE_FLOAT_CONFIG.mobileTravelScale : 1;
+  }
+
+  function sectionProgress() {
+    const distance = section.offsetHeight - window.innerHeight;
+    if (distance <= 0) return 1;
+    return clamp(-section.getBoundingClientRect().top / distance);
+  }
+
+  function paint(element, config, progress, scale) {
+    const span = Math.max(0.001, config.endProgress - config.startProgress);
+    const local = clamp((progress - config.startProgress) / span);
+    const x = (config.startX + (config.endX - config.startX) * local) * scale;
+    const y = (config.startY + (config.endY - config.startY) * local) * scale;
+    const rotation = config.startRotation + (config.endRotation - config.startRotation) * local;
+    const fade = clamp((progress - config.startProgress) / CONSEQUENCE_FLOAT_CONFIG.fadeSpan);
+    element.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${rotation.toFixed(3)}deg)`;
+    element.style.opacity = String(config.maxOpacity * fade);
+  }
+
+  function render(progress) {
+    const scale = travelScale();
+    floats.forEach((element) => {
+      const config = CONSEQUENCE_FLOAT_CONFIG[element.dataset.consequence];
+      if (config) paint(element, config, progress, scale);
+    });
+  }
+
+  function showResting() {
+    const scale = travelScale();
+    floats.forEach((element) => {
+      const config = CONSEQUENCE_FLOAT_CONFIG[element.dataset.consequence];
+      if (!config) return;
+      element.style.transform = `translate3d(${(config.endX * scale).toFixed(2)}px, ${(config.endY * scale).toFixed(2)}px, 0) rotate(${config.endRotation}deg)`;
+      element.style.opacity = String(config.maxOpacity);
+    });
+  }
+
+  let frame = 0;
+  let listening = false;
+
+  function requestRender() {
+    if (frame || motion.matches) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      render(sectionProgress());
+    });
+  }
+
+  function bind() {
+    if (motion.matches) {
+      if (listening) {
+        window.removeEventListener('scroll', requestRender);
+        listening = false;
+      }
+      showResting();
+      return;
+    }
+    if (!listening) {
+      window.addEventListener('scroll', requestRender, { passive: true });
+      listening = true;
+    }
+    render(sectionProgress());
+  }
+
+  window.addEventListener('resize', () => {
+    if (motion.matches) showResting();
+    else render(sectionProgress());
+  });
+  motion.addEventListener('change', bind);
+  bind();
+}
+
+initConsequenceFloats();

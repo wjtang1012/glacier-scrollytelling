@@ -189,8 +189,6 @@
   // Degrees of rotation at full spin for a data-turn of 1.
   // Each floe's data-turn keeps its own direction and relative amount.
   const floeTurnScale = 10;
-  const words = [...retreat.querySelectorAll('.retreat-words li')];
-  const retreatHeading = retreat.querySelector('h2');
   const map = document.getElementById('nepal-map-layer');
   const mountain = document.getElementById('nepal-mountain-layer');
   const camera = document.getElementById('nepal-mountain-camera');
@@ -239,14 +237,6 @@
       floe.homeTurn = floe.turn * floeTurnScale * spin;
       floe.homeScale = scale;
       paintFloe(floe);
-    });
-    const titleProgress = smooth(range(p, .1, .43));
-    retreatHeading.style.opacity = String(titleProgress);
-    retreatHeading.style.transform = `translateY(${60 * (1 - titleProgress)}px)`;
-    words.forEach((word, index) => {
-      const t = smooth(range(p, .2 + index * .07, .56 + index * .07));
-      word.style.opacity = String(t);
-      word.style.transform = `translateY(${100 * (1 - t)}px)`;
     });
   }
   function updateNepal(p) {

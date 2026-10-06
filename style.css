@@ -278,38 +278,41 @@ p { max-width: var(--content-width); }
 #warming .warming-hover-marker.is-visible { display: block; }
 #warming .warming-hover-marker.is-temperature { fill: var(--color-gold); }
 #warming .warming-hover-marker.is-glacier { fill: var(--color-grey); }
+/* Timeline annotations: same flat-panel hierarchy as the map readout. */
 #warming .warming-tooltip {
   position: absolute;
   z-index: 2;
-  width: max-content;
-  max-width: min(200px, calc(100% - 16px));
+  width: clamp(152px, 16vw, 220px);
+  max-width: calc(100% - 16px);
   margin: 0;
-  padding: 0;
-  background: transparent;
+  padding: 14px 16px 16px;
+  background: var(--color-grey);
   border: none;
+  border-radius: 0;
   box-shadow: none;
   outline: none;
   color: var(--color-brown);
-  font-size: 0.78rem;
-  line-height: 1.3;
-  letter-spacing: 0.03em;
+  text-align: center;
+  line-height: 1.25;
+  letter-spacing: 0;
   pointer-events: none;
 }
-#warming .warming-tooltip p {
-  margin: 0;
-}
-#warming .warming-tooltip-year,
-#warming .warming-tooltip-value {
+#warming .warming-tooltip p { margin: 0; }
+#warming .warming-tooltip .warming-tooltip-year {
+  margin-bottom: 10px;
+  font: 700 clamp(16px, 1.4vw, 22px)/1.15 "Roboto Slab", serif;
   font-variant-numeric: tabular-nums;
-  font-weight: 500;
-  letter-spacing: 0;
 }
+#warming .warming-tooltip .warming-tooltip-value {
+  margin-bottom: 6px;
+  font: 800 clamp(24px, 2.2vw, 34px)/1.1 "Roboto Flex", sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+#warming .warming-tooltip.is-glacier .warming-tooltip-value { color: var(--color-dark-blue); }
+#warming .warming-tooltip.is-temperature .warming-tooltip-value { color: var(--color-pink); }
 #warming .warming-tooltip-series {
-  margin-top: 0.35rem;
-  color: var(--color-brown);
-}
-#warming .warming-tooltip-value {
-  font-size: 0.95rem;
+  font: 400 clamp(11px, .85vw, 13px)/1.3 "Roboto Flex", sans-serif;
+  text-wrap: balance;
 }
 
 @media (max-width: 760px), (max-height: 600px) {
@@ -371,13 +374,113 @@ p { max-width: var(--content-width); }
   height: calc(250svh + var(--retreat-tail-screens) * 100svh);
   background: var(--color-dark-blue);
 }
-.retreat-stage { position: sticky; top: 0; height: 100svh; overflow: hidden; isolation: isolate; background: var(--color-dark-blue); }
+.retreat-stage { position: sticky; top: 0; height: 100svh; display: flex; align-items: center; justify-content: center; padding: clamp(24px, 6vh, 64px) 6%; overflow: hidden; isolation: isolate; background: var(--color-dark-blue); }
 /* Tint starts during entry; the gradient continues growing while the stage sticks. */
 .retreat-stage::before { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: linear-gradient(to bottom, var(--color-dark-blue) var(--retreat-blue-stop, 0%), var(--color-brown) var(--retreat-brown-stop, 40%)); opacity: var(--retreat-tint, 1); }
-.retreat-copy { position: absolute; z-index: 2; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8vh 4vw; text-align: center; }
-.retreat-copy .title-text-large { color: var(--color-dark-blue); margin: 0 0 40px; }
-.retreat-words { list-style: none; padding: 0; margin: 0; color: var(--color-light); font-size: clamp(26px, 4.1vw, 62px); line-height: 1.12; font-weight: 600; }
-.retreat-words li { will-change: transform, opacity; }
+.retreat-copy { position: relative; z-index: 5; width: min(60%, 680px); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.retreat-copy .title-text-large { color: var(--color-dark-blue); margin: 0 0 1.6rem; }
+.retreat-copy .consequence-intro {
+  width: min(100%, var(--content-width));
+  max-width: min(100%, var(--content-width));
+  margin: 0;
+  text-align: left;
+  color: var(--color-dark-blue);
+}
+.consequence-floats {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.consequence-float {
+  position: absolute;
+  left: var(--anchor-x);
+  top: var(--anchor-y);
+  width: 19%;
+  /* Separate centering from the scroll-driven transform. */
+  translate: -50% -50%;
+  margin: 0;
+  color: var(--color-light);
+  font-family: "Roboto Slab", serif;
+  font-size: clamp(16px, 1.75vw, 26px);
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  text-wrap: balance;
+  pointer-events: none;
+  user-select: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.consequence-float-idle {
+  will-change: transform;
+  animation: consequence-idle-drift var(--idle-duration) ease-in-out infinite;
+  animation-delay: var(--idle-delay);
+}
+/* Independent horizontal/vertical phases create a slow wandering loop.
+   --idle-x / --idle-y are the total travel spans (the peaks use half).
+   Increase these per keyword below; duration controls the pace. */
+@keyframes consequence-idle-drift {
+  0%, 100% {
+    transform: translate3d(calc(var(--idle-x) * -.5), calc(var(--idle-y) * -.2), 0) rotate(calc(var(--idle-rotate) * -.6));
+  }
+  25% {
+    transform: translate3d(calc(var(--idle-x) * -.1), calc(var(--idle-y) * -.5), 0) rotate(var(--idle-rotate));
+  }
+  50% {
+    transform: translate3d(calc(var(--idle-x) * .5), calc(var(--idle-y) * .1), 0) rotate(calc(var(--idle-rotate) * .4));
+  }
+  75% {
+    transform: translate3d(calc(var(--idle-x) * .1), calc(var(--idle-y) * .5), 0) rotate(calc(var(--idle-rotate) * -1));
+  }
+}
+
+/* An inset ring leaves the central copy clear. Anchors are percentages of the stage. */
+.consequence-float--sea-level {
+  --anchor-x: 24%; --anchor-y: 14%;
+  --idle-x: 20px; --idle-y: 24px; --idle-rotate: .9deg;
+  --idle-duration: 14s; --idle-delay: -3s;
+}
+.consequence-float--freshwater {
+  --anchor-x: 51%; --anchor-y: 9%;
+  --idle-x: 24px; --idle-y: 20px; --idle-rotate: -.8deg;
+  --idle-duration: 17s; --idle-delay: -8s;
+}
+.consequence-float--hazards {
+  --anchor-x: 78%; --anchor-y: 15%;
+  --idle-x: 18px; --idle-y: 28px; --idle-rotate: 1deg;
+  --idle-duration: 13s; --idle-delay: -4.5s;
+}
+.consequence-float--ecosystem {
+  --anchor-x: 12%; --anchor-y: 40%;
+  --idle-x: 22px; --idle-y: 20px; --idle-rotate: .8deg;
+  --idle-duration: 18s; --idle-delay: -11s;
+}
+.consequence-float--habitat {
+  --anchor-x: 88%; --anchor-y: 40%;
+  --idle-x: 18px; --idle-y: 26px; --idle-rotate: -.9deg;
+  --idle-duration: 15s; --idle-delay: -6s;
+}
+.consequence-float--water-quality {
+  --anchor-x: 12%; --anchor-y: 68%;
+  --idle-x: 22px; --idle-y: 24px; --idle-rotate: -.7deg;
+  --idle-duration: 16s; --idle-delay: -12s;
+}
+.consequence-float--food {
+  --anchor-x: 88%; --anchor-y: 68%;
+  --idle-x: 20px; --idle-y: 26px; --idle-rotate: .9deg;
+  --idle-duration: 17s; --idle-delay: -5s;
+}
+.consequence-float--hydropower {
+  --anchor-x: 32%; --anchor-y: 88%;
+  --idle-x: 24px; --idle-y: 22px; --idle-rotate: -.8deg;
+  --idle-duration: 14s; --idle-delay: -9s;
+}
+.consequence-float--heritage {
+  --anchor-x: 69%; --anchor-y: 87%;
+  --idle-x: 18px; --idle-y: 24px; --idle-rotate: .7deg;
+  --idle-duration: 19s; --idle-delay: -14s;
+}
 .retreat-art { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .retreat-art-back { z-index: 1; }
 .retreat-art-front { z-index: 3; }
@@ -581,9 +684,21 @@ html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
   .draft-hero-art { margin-top: 15px; }
   .draft-intro-copy { margin-top: 10px; padding: 0; }
   .draft-intro-copy .draft-copy { width: 65%; }
-  .retreat-copy { padding-inline: 4%; }
+  /* On narrow screens the ring opens into upper and lower arcs. */
+  .retreat-stage { padding-inline: 7%; }
+  .retreat-copy { width: 100%; }
   .retreat-copy .title-text-large { font-size: 28px; }
-  .retreat-words { font-size: clamp(24px, 5.5vw, 38px); line-height: 1.25; }
+  .retreat-copy .consequence-intro { font-size: 15px; line-height: 1.4; }
+  .consequence-float { width: 39%; font-size: 16px; }
+  .consequence-float--sea-level { --anchor-x: 26%; --anchor-y: 8%; }
+  .consequence-float--freshwater { --anchor-x: 74%; --anchor-y: 9%; }
+  .consequence-float--hazards { --anchor-x: 27%; --anchor-y: 18%; }
+  .consequence-float--ecosystem { --anchor-x: 73%; --anchor-y: 18%; }
+  .consequence-float--habitat { --anchor-x: 26%; --anchor-y: 77%; }
+  .consequence-float--water-quality { --anchor-x: 74%; --anchor-y: 77%; }
+  .consequence-float--food { --anchor-x: 26%; --anchor-y: 86%; }
+  .consequence-float--hydropower { --anchor-x: 74%; --anchor-y: 86%; }
+  .consequence-float--heritage { --anchor-x: 50%; --anchor-y: 94%; width: 70%; }
   .map-section { padding-block: 65px; }
   .map-section .title-text-large { font-size: 27px; }
   .draft-label { font-size: 11px; }
@@ -605,12 +720,15 @@ html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
   .nepal-story { top: 0; }
   .nepal-story h3 { font-size: 18px; margin-bottom: 10px; }
   .retreat-copy .title-text-large { font-size: 26px; margin-bottom: 20px; }
-  .retreat-words { font-size: 30px; }
+  .retreat-stage { gap: 22px; padding-block: 20px; }
+  .retreat-copy .consequence-intro { font-size: 15px; line-height: 1.35; }
+  .consequence-float { font-size: 17px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .retreat-section { height: auto; }
   .retreat-stage { position: relative; min-height: 700px; }
   .retreat-art { display: none; }
+  .consequence-float-idle { animation: none; transform: none; }
   .nepal-section { height: auto; }
   .nepal-stage { position: relative; height: auto; min-height: 100svh; }
   .nepal-story { max-height: none; overflow: visible; position: static; margin-block: 50px; opacity: 1 !important; transform: none !important; }
@@ -780,7 +898,47 @@ html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
 .map-journey-stage #glacier-map {
   width: min(100vw, 225svh);
   margin: 0;
+  flex: 0 0 auto;
+}
+
+/* GLOBAL MAP INTRO — VISUAL TUNING */
+.map-journey-stage {
+  --global-map-intro-width: 1000px;
+  --global-map-intro-padding-x: 10px;
+  --global-map-intro-gap: 40px;
+  /* Distance from the map box top to the painted globe: empty space from
+     scale(0.8), plus the ocean's 16.42 unit inset inside the viewBox.
+     viewBox height 1428.3294 / --map-ocean-span 2790. Keep scale in sync with
+     --glacier-map-scale. */
+  --global-map-intro-scale-inset: calc(min(100vw, 225svh) * (0.1 * 1428.3294 + 0.8 * 16.42) / 2790);
+  /* Recenters text + globe. Replace with a length, e.g. 12px, to nudge. */
+  --global-map-composition-offset-y: calc(var(--global-map-intro-scale-inset) / 2);
+}
+.global-map-composition {
   grid-area: 1 / 1;
+  justify-self: stretch;
+  align-self: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  transform: translateY(var(--global-map-composition-offset-y));
+}
+.global-map-intro {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  width: min(100%, var(--global-map-intro-width));
+  max-width: var(--global-map-intro-width);
+  margin: 0 0 calc(var(--global-map-intro-gap) - var(--global-map-intro-scale-inset));
+  padding-inline: var(--global-map-intro-padding-x);
+  text-align: left;
+  pointer-events: none;
+}
+@media (max-width: 760px) {
+  .map-journey-stage { --global-map-intro-gap: 16px; }
 }
 .map-journey-stage .map-journey-nepal-preview {
   position: absolute;
@@ -793,7 +951,7 @@ html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
 }
 .map-journey-nepal-preview .nepal-scene,
 .map-journey-nepal-preview .nepal-narrative { min-height: 0; }
-#glacier-map .map-journey-country { stroke: none; }
+#glacier-map .map-journey-country { stroke: none; pointer-events: none; }
 #glacier-map.is-map-journey-active { pointer-events: none; }
 #glacier-map.is-map-journey-active .glacier-regions-layer { transition: none; }
 #glacier-map.is-map-journey-active .glacier-region-readout { display: none; }

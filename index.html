@@ -67,9 +67,41 @@
       <div class="retreat-stage">
         <div class="retreat-copy">
           <h2 id="consequences-title" class="title-text-large">When glaciers retreat,<br>the landscape changes.</h2>
-          <ul class="retreat-words small-text-normal">
-            <li>Sea Level Rise</li><li>Freshwater Shortage</li><li>Natural Hazards</li><li>Ecosystem Disruption</li><li>Habitat Disruption</li>
-          </ul>
+          <p class="small-text-san-serif consequence-intro">But the loss of glaciers is more than a change in scenery. As ice disappears, the systems around it begin to shift too. Rivers and freshwater supplies are altered, natural hazards can intensify, and newly exposed land reshapes entire ecosystems. For plants, animals, and people, glacier retreat can transform the places they depend on to live.</p>
+        </div>
+        <div class="consequence-floats">
+          <div class="consequence-float consequence-float--sea-level" data-consequence="seaLevel">
+            <div class="consequence-float-idle">Sea Level Rise</div>
+          </div>
+          <div class="consequence-float consequence-float--freshwater" data-consequence="freshwater">
+            <div class="consequence-float-idle">Freshwater Shortage</div>
+          </div>
+          <div class="consequence-float consequence-float--hazards" data-consequence="hazards">
+            <div class="consequence-float-idle">Natural Hazards</div>
+          </div>
+          <div class="consequence-float consequence-float--ecosystem" data-consequence="ecosystem">
+            <div class="consequence-float-idle">Ecosystem Disruption</div>
+          </div>
+          <div class="consequence-float consequence-float--habitat" data-consequence="habitat">
+            <div class="consequence-float-idle">Habitat Disruption</div>
+          </div>
+          <!-- Additional impacts: WMO Frozen Water (water quality, agriculture, hydropower);
+               IPCC SROCC Chapter 2 (irrigation/yields); UNESCO International Year of Glaciers 2025 (cultural heritage).
+               https://public.wmo.int/about-us/world-meteorological-day/wmd-2020/frozen-water
+               https://www.ipcc.ch/srocc/chapter/chapter-2/
+               https://www.unesco.org/en/articles/unesco-and-wmo-launch-international-year-glaciers-preservation-2025 -->
+          <div class="consequence-float consequence-float--water-quality" data-consequence="waterQuality">
+            <div class="consequence-float-idle">Water Quality Changes</div>
+          </div>
+          <div class="consequence-float consequence-float--food" data-consequence="food">
+            <div class="consequence-float-idle">Food Security Risks</div>
+          </div>
+          <div class="consequence-float consequence-float--hydropower" data-consequence="hydropower">
+            <div class="consequence-float-idle">Hydropower Disruption</div>
+          </div>
+          <div class="consequence-float consequence-float--heritage" data-consequence="heritage">
+            <div class="consequence-float-idle">Cultural Heritage Loss</div>
+          </div>
         </div>
         <svg class="retreat-art retreat-art-back" data-depth="back" viewBox="0 0 1100 730" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
         <svg class="retreat-art retreat-art-front" data-depth="front" viewBox="0 0 1100 730" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
@@ -83,7 +115,10 @@
       </div>
       <div class="map-journey">
         <div class="map-journey-stage">
-          <div id="glacier-map" class="draft-map"></div>
+          <div class="global-map-composition">
+            <p class="small-text-san-serif global-map-intro">The globe is divided into 19 first-order glacier regions by the Global Terrestrial Network for Glaciers (GTN-G) and the Randolph Glacier Inventory (RGI) to monitor and analyze ice masses worldwide. Together, these regions offer a global view of how glaciers are changing. Hover over each region to explore how much glacier mass was lost between 2000 and 2024.</p>
+            <div id="glacier-map" class="draft-map"></div>
+          </div>
         </div>
       </div>
     </section>
