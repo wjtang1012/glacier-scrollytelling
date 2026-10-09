@@ -16,8 +16,12 @@
   --content-width: 660px;
   --visual-width: 1200px;
   --page-frame-width: 5vw;
-  /* Same horizontal edge as #hero .section-inner: frame plus the hero gutter, or the centered 1200px column when that is further in. */
-  --page-content-edge: max(calc(var(--page-frame-width) + 2vw), calc(50vw - var(--visual-width) / 2));
+  /* Shared inset for left- and right-aligned text: the grey frame plus the hero title gutter. */
+  --text-gutter: 3vw;
+  /* Page info only (colophon, sources, AI note). Edit this value to change the space on both sides. */
+  --footer-padding-inline: 8vw;
+  --text-inline-inset: calc(var(--page-frame-width) + var(--text-gutter));
+  --page-content-edge: var(--text-inline-inset);
 }
 
 * { box-sizing: border-box; }
@@ -493,7 +497,12 @@ p { max-width: var(--content-width); }
 
 /* 04 — Real world map. */
 .map-section { background: var(--color-brown); color: var(--color-dark-blue); padding: 10vh 0 12vh; }
-.map-section .title-text-large { color: var(--color-dark-blue); margin: 0 0 44px; }
+.map-section > .draft-inner {
+  width: min(1100px, 100%);
+  margin-inline: auto;
+  text-align: left;
+}
+.map-section .title-text-large { color: var(--color-dark-blue); margin: 0 auto 44px; text-align: left; }
 .map-ice { position: absolute; inset: 0; z-index: 31; width: 100%; height: 100%; overflow: hidden; pointer-events: none; }
 .map-ice-shape { fill: var(--color-dark-blue); }
 
@@ -638,7 +647,16 @@ path.glacier-region-boundaries {
 .scene-footnote { position: absolute; left: 5%; bottom: 20px; margin: 0; font-size: 11px; color: var(--color-brown); }
 .nepal-glacier-caption { z-index: 32; pointer-events: none; }
 #nepal-map-layer, #nepal-mountain-layer, #nepal-mountain-camera, #ice-falling, .falling-rock, .nepal-water-motion, .nepal-impact-piece, .nepal-person { will-change: transform, opacity; }
-.nepal-narrative { display: flex; flex-direction: column; padding: clamp(28px, 5vh, 64px) 10%; background: var(--color-grey); min-width: 0; }
+.nepal-narrative {
+  display: flex;
+  flex-direction: column;
+  padding-block: clamp(28px, 5vh, 64px);
+  /* Keep the 20% total inset so the text measure stays put; the right edge matches the page gutter. */
+  padding-left: calc(20% - var(--text-gutter));
+  padding-right: var(--text-gutter);
+  background: var(--color-grey);
+  min-width: 0;
+}
 .nepal-narrative .title-text-large { color: var(--color-dark-blue); font-size: clamp(25px, 3vw, 45px); margin: 0; flex: 0 0 auto; }
 .nepal-stories { position: relative; flex: 1; min-height: 0; margin-top: 7vh; }
 .nepal-story { position: absolute; top: 0; left: 0; width: 100%; max-height: 100%; overflow-y: auto; }
@@ -672,7 +690,13 @@ path.glacier-region-boundaries {
 .impact-deaths { color: var(--color-pink); }
 .impact-line { display: block; }
 .impact-missing { color: var(--color-grey); }
-#sources.draft-sources { margin-inline: var(--page-frame-width); padding: clamp(55px, 7vw, 100px) 2vw; background: var(--color-brown); color: var(--color-grey); }
+#sources.draft-sources { margin-inline: var(--page-frame-width); padding: clamp(55px, 7vw, 100px) var(--footer-padding-inline); background: var(--color-brown); color: var(--color-grey); }
+#sources > .draft-inner {
+  width: 100%;
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+}
 .footer-columns { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 72px); align-items: start; }
 .footer-credits { display: grid; gap: 30px; }
 .draft-sources h2 { font-family: "Roboto Slab", serif; font-size: 18px; font-weight: 700; line-height: 1.4; margin: 0 0 10px; }
@@ -724,7 +748,7 @@ html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
   .map-section .title-text-large { font-size: 27px; }
   .draft-label { font-size: 11px; }
   .nepal-stage { grid-template-columns: 1fr 1fr; }
-  .nepal-narrative { padding: 30px 9%; }
+  .nepal-narrative { padding: 30px 9%; padding-left: calc(18% - var(--text-gutter)); padding-right: var(--text-gutter); }
   .nepal-narrative .title-text-large { font-size: clamp(20px, 4.7vw, 30px); }
   .nepal-story h3 { font-size: 18px; }
   .scene-footnote { font-size: 9px; padding-right: 10px; }
@@ -948,11 +972,12 @@ html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
 .global-map-intro {
   position: relative;
   z-index: 1;
+  align-self: center;
   flex: 0 0 auto;
-  width: min(100%, var(--global-map-intro-width));
-  max-width: var(--global-map-intro-width);
-  margin: 0 0 calc(var(--global-map-intro-gap) - var(--global-map-intro-scale-inset));
-  padding-inline: var(--global-map-intro-padding-x);
+  width: min(980px, calc(100% - 2 * var(--text-gutter)));
+  max-width: none;
+  margin: 0 auto calc(var(--global-map-intro-gap) - var(--global-map-intro-scale-inset));
+  padding-inline: 0;
   text-align: left;
   pointer-events: none;
 }
@@ -989,8 +1014,22 @@ html:not(.sketch-motion) .nepal-after-map-journey { margin-top: 0; }
 
 /* 07 — Four warming scenarios, measured against the 2025 glacier count. */
 .future-section { background: var(--color-dark-blue); color: var(--color-brown); padding-block: clamp(65px, 8vw, 120px) clamp(60px, 7vw, 110px); }
-.future-section #future-title { margin: 0 0 44px; }
-.future-intro { width: min(100%, 1000px); margin-inline: auto; padding-inline: 10px; text-align: left; }
+.future-section #future-title { margin: 0 auto 44px; text-align: left; }
+.future-lead {
+  width: 100%;
+  margin: 0;
+  padding-left: var(--text-gutter);
+  padding-right: var(--text-gutter);
+  text-align: left;
+}
+.future-section > .future-lead #future-title { width: min(calc(1100px - 4vw), 100%); }
+.future-intro {
+  width: min(980px, 100%);
+  max-width: 100%;
+  margin-inline: auto;
+  padding-inline: 0;
+  text-align: left;
+}
 .future-intro p { max-width: none; margin: 0 0 1.2em; }
 .future-scrolly { margin-top: clamp(40px, 5vw, 72px); }
 .future-sticky { position: sticky; top: clamp(12px, 8vh, 72px); z-index: 1; background: var(--color-dark-blue); }
@@ -1063,13 +1102,13 @@ html:not(.sketch-motion) .nepal-after-map-journey { margin-top: 0; }
 #hero.hero-scroll { height: var(--hero-scroll-height); padding: 0; }
 .hero-scroll .hero-stage { position: sticky; top: 0; height: var(--hero-stage-height); overflow: clip; background: var(--color-dark-blue); }
 #hero.hero-scroll .section-inner { max-width: none; }
-#hero.hero-scroll #hero-title { position: absolute; z-index: 3; top: clamp(36px, 6svh, 76px); left: 3vw; right: 3vw; max-width: none; margin: 0; font-size: clamp(40px, 6.5vw, 120px); line-height: 1.08; pointer-events: none; will-change: opacity; }
-#hero.hero-scroll .hero-anatomy-copy { position: absolute; z-index: 3; left: 3vw; top: clamp(48px, 8svh, 90px); width: min(36%, 520px); opacity: 0; pointer-events: none; }
+#hero.hero-scroll #hero-title { position: absolute; z-index: 3; top: clamp(36px, 6svh, 76px); left: var(--text-gutter); right: var(--text-gutter); max-width: none; margin: 0; font-size: clamp(40px, 6.5vw, 120px); line-height: 1.08; pointer-events: none; will-change: opacity; }
+#hero.hero-scroll .hero-anatomy-copy { position: absolute; z-index: 3; left: var(--text-gutter); top: clamp(48px, 8svh, 90px); width: min(36%, 520px); opacity: 0; pointer-events: none; }
 #hero .hero-anatomy-copy #hero-anatomy-title { position: static; margin: 0 0 24px; }
 .hero-introduction p { max-width: none; margin: 0 0 1.2em; }
 .hero-introduction p:last-child { margin-bottom: 0; }
 .hero-scroll .hero-anatomy { position: absolute; z-index: 1; top: var(--hero-art-top, 140px); left: 7vw; width: calc(120% + 4.8vw); margin: 0; transform-origin: 0 0; will-change: transform; }
-#hero.hero-scroll .hero-bottom { position: absolute; z-index: 3; top: calc(100svh - 100px); left: 3vw; padding: 0; width: auto; }
+#hero.hero-scroll .hero-bottom { position: absolute; z-index: 3; top: calc(100svh - 100px); left: var(--text-gutter); padding: 0; width: auto; }
 #hero.hero-scroll .scroll-indicator { margin: 0; font-size: clamp(18px, 2vw, 27px); }
 .hero-scroll .hero-anatomy-points, .hero-scroll .hero-anatomy-leader, .hero-scroll .anatomy-annotation { opacity: 0; }
 @media (max-width: 600px) {
