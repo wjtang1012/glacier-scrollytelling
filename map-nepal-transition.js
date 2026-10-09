@@ -1,6 +1,7 @@
 /* Scroll connection: the existing world map → its actual Nepal path → Nepal story. */
-(() => {
+(async () => {
   'use strict';
+  await nepalMountainReady;
   // 调整衔接节奏：总长度在 CSS 的 --map-journey-screens，以下数值是 0–1 的进度。
   const TIMING = {
     outlines: [0, .12],
@@ -116,7 +117,6 @@
     preview.querySelector('.nepal-glacier-caption').remove();
     const previewCountry = preview.querySelector('.nepal-country-shape');
     preview.querySelector('#nepal-mountain-layer').remove();
-    preview.querySelector('#nepal-village-layer').remove();
     preview.querySelectorAll('.nepal-story').forEach((story, index) => {
       story.style.opacity = index === 0 ? '1' : '0';
       story.style.visibility = index === 0 ? 'visible' : 'hidden';

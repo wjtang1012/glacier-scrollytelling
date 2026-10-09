@@ -1,6 +1,7 @@
 /* Supplementary sketch interactions only. The completed warming chart is untouched. */
-(() => {
+(async () => {
   'use strict';
+  await nepalMountainReady;
   const retreat = document.getElementById('consequences');
   const nepal = document.getElementById('nepal');
   const retreatStage = retreat && retreat.querySelector('.retreat-stage');
@@ -192,10 +193,37 @@
   const map = document.getElementById('nepal-map-layer');
   const mountain = document.getElementById('nepal-mountain-layer');
   const camera = document.getElementById('nepal-mountain-camera');
-  const fallingIce = document.getElementById('nepal-ice');
+  const fallingIce = document.getElementById('ice-falling');
+  const mountainGround = document.getElementById('nepal-mountain-ground');
+  // Framing in the 680 × 800 scene: summit clearance and upward camera travel.
+  const MOUNTAIN_FRAME = { summitOffset: 108, rise: 420 };
   const rocks = [...nepal.querySelectorAll('.falling-rock')];
-  const village = document.getElementById('nepal-village-layer');
-  const pieces = [...nepal.querySelectorAll('.village-piece')];
+  const artworkUnits = Number(camera.dataset.artworkUnitsPerScene) || 1;
+  const centerOf = (node) => {
+    const box = node.getBBox();
+    return { x: box.x + box.width / 2, y: box.y + box.height / 2 };
+  };
+  const iceCenter = fallingIce ? centerOf(fallingIce) : null;
+  const rockCenters = rocks.map(centerOf);
+  // Nepal section progress: the mountain stays intact until the chapter handoff.
+  const COLLAPSE_START = .44;
+  const ROCK_FALL = {
+    // delay/end control relative speed; distance/drift are outer-scene units.
+    'rock-1': { delay: 0,    end: .80, distance: 245, drift: -25, turn: -25 },
+    'rock-2': { delay: .016, end: .84, distance: 228, drift:  33, turn:  32 },
+    'rock-3': { delay: .007, end: .77, distance: 270, drift: -41, turn: -20 },
+    'rock-4': { delay: .028, end: .85, distance: 194, drift:  49, turn:  35 },
+    'rock-5': { delay: .020, end: .79, distance: 236, drift: -57, turn: -28 },
+    'rock-6': { delay: .012, end: .82, distance: 160, drift:  65, turn:  22 },
+    'rock-7': { delay: .035, end: .86, distance: 207, drift: -73, turn: -38 },
+    'rock-8': { delay: .024, end: .81, distance: 180, drift:  81, turn:  30 }
+  };
+  const floodSequence = createNepalFloodSequence(camera);
+  // Match the fall to the authored settlement height, even when SVG is updated.
+  const iceBox = fallingIce && fallingIce.getBBox();
+  const iceDrop = floodSequence && iceBox
+    ? Math.max(230 * artworkUnits, floodSequence.groundY + 40 - iceBox.y - iceBox.height)
+    : 230 * artworkUnits;
   const stories = [...nepal.querySelectorAll('.nepal-story')];
   const progressMarks = [...nepal.querySelectorAll('.nepal-progress i')];
   // Five reading chapters, aligned with the existing illustration sequence.
@@ -242,29 +270,32 @@
   function updateNepal(p) {
     const zoomMap = smooth(range(p, 0, .22));
     const approach = smooth(range(p, .2, .43));
-    const fall = range(p, .46, .82);
-    const pullBack = smooth(range(p, .68, .89));
-    const collision = range(p, .83, .98);
+    const fall = range(p, COLLAPSE_START, .87);
+    const rise = smooth(range(p, .50, .68));
     map.setAttribute('transform', `translate(340 400) scale(${1 + zoomMap * 2.7}) translate(-340 -400)`);
     map.style.opacity = String(1 - range(p, .18, .29));
     // The morph controller owns visibility while the triangle becomes the mountain.
     if (mountain.dataset.morphManaged !== 'true') mountain.style.opacity = String(range(p, .21, .32));
-    const scale = .76 + approach * .59 - pullBack * .35;
-    camera.setAttribute('transform', `translate(300 ${300 - pullBack * 50}) scale(${scale}) translate(-300 -300)`);
-    fallingIce.setAttribute('transform', `translate(${fall * 18} ${fall * fall * 230}) rotate(${fall * 9} 245 380)`);
+    // Finish the approach, then pan upward without shrinking the mountain.
+    const scale = .76 + approach * .59;
+    camera.setAttribute('transform', `translate(300 ${300 + approach * MOUNTAIN_FRAME.summitOffset - rise * MOUNTAIN_FRAME.rise}) scale(${scale}) translate(-300 -300)`);
+    if (mountainGround) {
+      mountainGround.style.opacity = String(smooth(range(p, .34, .40)));
+      // The lower slope fills the mountain chapter and clears as the town enters.
+      mountainGround.setAttribute('height', String(500 * (1 - rise)));
+    }
+    if (fallingIce) fallingIce.setAttribute('transform', `translate(${fall * 18 * artworkUnits} ${fall * fall * iceDrop}) rotate(${fall * 9} ${iceCenter.x} ${iceCenter.y})`);
     rocks.forEach((rock, i) => {
-      const t = range(p, .47 + (i % 3) * .025, .85);
-      rock.setAttribute('transform', `translate(${(i % 2 ? 1 : -1) * t * (25 + i * 8)} ${t * t * (245 - i * 17)}) rotate(${(i % 2 ? 1 : -1) * t * 32} ${250 + i * 20} 400)`);
+      const movement = ROCK_FALL[rock.id] || ROCK_FALL['rock-1'];
+      const start = COLLAPSE_START + movement.delay;
+      const t = range(p, start, movement.end);
+      const drop = floodSequence
+        ? Math.max(movement.distance * artworkUnits, floodSequence.groundY + 65 + i * 18 - rockCenters[i].y)
+        : movement.distance * artworkUnits;
+      rock.style.opacity = String(smooth(range(p, start, start + .045)));
+      rock.setAttribute('transform', `translate(${t * movement.drift * artworkUnits} ${t * t * drop}) rotate(${t * movement.turn} ${rockCenters[i].x} ${rockCenters[i].y})`);
     });
-    village.style.opacity = String(range(p, .64, .79));
-    pieces.forEach((piece, i) => {
-      const direction = i % 2 ? 1 : -1;
-      const dx = direction * collision * (30 + (i % 5) * 17);
-      const dy = -Math.sin(collision * Math.PI) * (15 + (i % 4) * 10) + collision * collision * 35;
-      piece.style.transformBox = 'fill-box';
-      piece.style.transformOrigin = 'center';
-      piece.style.transform = `translate(${dx}px, ${dy}px) rotate(${direction * collision * (10 + (i % 4) * 9)}deg)`;
-    });
+    if (floodSequence) floodSequence.update(p);
     const active = nepalChapters.reduce((current, chapter, i) => p >= chapter.start ? i : current, 0);
     nepal.dataset.activeStep = nepalChapters[active].id;
     stories.forEach((story, i) => {
@@ -485,15 +516,105 @@
   motion.addEventListener('change', requestRender);
   render();
 
-  const impactDetail = document.getElementById('impact-detail');
-  const defaultImpactText = impactDetail.textContent;
-  document.querySelectorAll('.impact-mark').forEach((mark) => {
-    const show = () => { impactDetail.textContent = `${mark.dataset.impact} · count, account & source pending`; };
-    const reset = () => { impactDetail.textContent = defaultImpactText; };
-    mark.addEventListener('pointerenter', show);
-    mark.addEventListener('pointerleave', reset);
-    mark.addEventListener('focus', show);
-    mark.addEventListener('blur', reset);
-    mark.addEventListener('click', show);
+})();
+
+// Build the count once. Resizing only repositions the same 6,177 circles.
+(() => {
+  const chart = document.getElementById('impact-dot-chart');
+  const detail = document.getElementById('impact-detail');
+  if (!chart || !detail) return;
+  // Larger dots overlap horizontally, like a chain. Rows stay separated so the block is shorter.
+  const DOTS = { diameter: 16, spacing: 16, rowGap: 8 };
+  const defaultText = detail.textContent;
+  const circles = [];
+  const tooltip = document.createElement('div');
+  tooltip.id = 'impact-tooltip';
+  tooltip.className = 'impact-tooltip';
+  tooltip.setAttribute('role', 'tooltip');
+  tooltip.hidden = true;
+  const count = document.createElement('strong');
+  const label = document.createElement('span');
+  const note = document.createElement('small');
+  note.textContent = 'One dot represents one individual';
+  tooltip.append(count, label, note);
+  document.body.append(tooltip);
+  let activeGroup = null;
+  function hideTooltip() {
+    tooltip.hidden = true;
+    if (activeGroup) activeGroup.removeAttribute('aria-describedby');
+    activeGroup = null;
+    detail.textContent = defaultText;
+  }
+  function showTooltip(group, x, y) {
+    if (activeGroup && activeGroup !== group) activeGroup.removeAttribute('aria-describedby');
+    activeGroup = group;
+    group.setAttribute('aria-describedby', tooltip.id);
+    count.textContent = Number(group.dataset.count).toLocaleString('en-US');
+    label.textContent = group.dataset.impact.replace(/^[\d,]+\s+/, '');
+    tooltip.classList.toggle('is-missing', group.classList.contains('impact-mark-2'));
+    detail.textContent = `${group.dataset.impact} · ${defaultText}`;
+    tooltip.hidden = false;
+    const box = tooltip.getBoundingClientRect();
+    // Flip beside the pointer at screen edges; never cover the hovered dot.
+    const left = x + 18 + box.width > window.innerWidth - 12 ? x - box.width - 18 : x + 18;
+    const top = y + 18 + box.height > window.innerHeight - 12 ? y - box.height - 18 : y + 18;
+    tooltip.style.left = `${Math.max(12, Math.min(left, window.innerWidth - box.width - 12))}px`;
+    tooltip.style.top = `${Math.max(12, Math.min(top, window.innerHeight - box.height - 12))}px`;
+  }
+  function showAtPointer(event) {
+    const dot = event.target.closest('.impact-dot');
+    if (!dot) { hideTooltip(); return; }
+    showTooltip(dot.parentElement, event.clientX, event.clientY);
+  }
+  // Pointer clicks should not focus/scroll an entire tall SVG category.
+  chart.addEventListener('pointerdown', (event) => {
+    if (event.target.closest('.impact-dot')) event.preventDefault();
   });
+  chart.addEventListener('pointermove', showAtPointer);
+  chart.addEventListener('click', showAtPointer);
+  chart.addEventListener('pointerleave', hideTooltip);
+  chart.addEventListener('pointercancel', hideTooltip);
+  window.addEventListener('scroll', hideTooltip, { passive: true });
+  window.addEventListener('resize', hideTooltip);
+  window.addEventListener('blur', hideTooltip);
+  chart.addEventListener('keydown', (event) => { if (event.key === 'Escape') hideTooltip(); });
+  chart.querySelectorAll('.impact-category').forEach((group) => {
+    const fragment = document.createDocumentFragment();
+    for (let i = 0; i < Number(group.dataset.count); i++) {
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('class', 'impact-dot');
+      circle.setAttribute('r', String(DOTS.diameter / 2));
+      circle.setAttribute('aria-hidden', 'true');
+      fragment.append(circle);
+      circles.push(circle);
+    }
+    group.append(fragment);
+    group.addEventListener('focus', () => {
+      const box = group.getBoundingClientRect();
+      showTooltip(group, box.left + box.width / 2, Math.max(24, Math.min(box.top + 12, window.innerHeight / 2)));
+    });
+    group.addEventListener('blur', hideTooltip);
+  });
+  let lastWidth = 0;
+  function layoutDots() {
+    const width = chart.getBoundingClientRect().width;
+    if (!width || Math.abs(width - lastWidth) < .5) return;
+    lastWidth = width;
+    const { diameter, spacing, rowGap } = DOTS;
+    const columns = Math.max(1, Math.floor((width - diameter) / spacing) + 1);
+    const rows = Math.ceil(circles.length / columns);
+    const rowPitch = diameter + rowGap;
+    const rowWidth = diameter + (columns - 1) * spacing;
+    const originX = (width - rowWidth) / 2 + diameter / 2;
+    const height = diameter + Math.max(0, rows - 1) * rowPitch;
+    chart.setAttribute('viewBox', `0 0 ${width} ${height}`);
+    chart.style.height = `${height}px`;
+    circles.forEach((circle, i) => {
+      circle.setAttribute('cx', String(originX + (i % columns) * spacing));
+      circle.setAttribute('cy', String(diameter / 2 + Math.floor(i / columns) * rowPitch));
+    });
+  }
+  layoutDots();
+  if (window.ResizeObserver) new ResizeObserver(layoutDots).observe(chart.parentElement);
+  else window.addEventListener('resize', layoutDots);
 })();

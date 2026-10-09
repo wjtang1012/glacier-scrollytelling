@@ -1,8 +1,71 @@
-/* A scroll-driven contour morph, not a crossfade between two illustrations.
-   Replacement SVG contract: #nepal-mountain-silhouette is one closed outer path
-   inside #nepal-mountain-camera. Snow/ice remain separate siblings in that camera.
-   The target contour is sampled from that path on load, so replacing its d works
-   without rewriting the animation. Keep the scene's existing 680 × 800 viewBox. */
+/* Authored mountain artwork. Keep mountain-base, ice-top-left, ice-top-right,
+   ice-falling and rock-* IDs when updating the source SVG. Both scroll consumers
+   await this one load, so they always use the same live geometry. */
+const nepalMountainReady = (async () => {
+  const camera = document.getElementById('nepal-mountain-camera');
+  if (!camera) return false;
+  try {
+    const response = await fetch('./assets/svg/nepal-glacier-mountain.svg');
+    if (!response.ok) throw new Error(`Mountain SVG: ${response.status}`);
+    const documentSvg = new DOMParser().parseFromString(await response.text(), 'image/svg+xml');
+    if (documentSvg.querySelector('parsererror')) throw new Error('Invalid mountain SVG');
+    const artwork = document.importNode(documentSvg.documentElement, true);
+    for (const id of ['mountain-base', 'ice-top-left', 'ice-top-right', 'ice-falling']) {
+      if (!artwork.querySelector(`#${id}`)) throw new Error(`Mountain SVG is missing ${id}`);
+    }
+    // Fit the original viewBox without distorting its proportions. The outer
+    // 680 × 800 scene and its existing scroll camera remain unchanged.
+    const viewBox = artwork.viewBox.baseVal;
+    const width = 680;
+    const unitsPerScene = viewBox.width / width;
+    artwork.id = 'nepal-mountain-artwork';
+    artwork.setAttribute('x', '0');
+    artwork.setAttribute('y', '110');
+    artwork.setAttribute('width', String(width));
+    artwork.setAttribute('height', String(viewBox.height / unitsPerScene));
+    artwork.setAttribute('overflow', 'visible');
+    artwork.setAttribute('aria-hidden', 'true');
+    artwork.style.pointerEvents = 'none';
+    camera.dataset.artworkUnitsPerScene = String(unitsPerScene);
+    // Illustrator's generic .cls-* rules must not recolor the world map.
+    const classes = new Set([...artwork.querySelectorAll('[class]')].flatMap((node) => [...node.classList]));
+    artwork.querySelectorAll('style').forEach((style) => {
+      style.textContent = style.textContent.replace(/\.([a-zA-Z_][\w-]*)/g,
+        (selector, name) => classes.has(name) ? `.nepal-art-${name}` : selector);
+    });
+    artwork.querySelectorAll('[class]').forEach((node) => {
+      node.setAttribute('class', [...node.classList].map((name) => `nepal-art-${name}`).join(' '));
+    });
+    artwork.querySelectorAll('[id^="rock-"]').forEach((rock) => {
+      rock.classList.add('falling-rock');
+      rock.style.opacity = '0'; // Revealed only by the collapse scroll sequence.
+    });
+    artwork.querySelectorAll('[id^="water-"], [id^="building-"], [id^="window-"], [id^="line-"]').forEach((node) => {
+      node.style.opacity = '0'; // The flood controller, not the mountain morph, reveals these.
+    });
+    camera.replaceChildren(artwork);
+    // Continue the authored mountain's flat bottom without modifying the SVG file.
+    const base = artwork.querySelector('#mountain-base');
+    const baseBox = base.getBBox();
+    const ground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    ground.id = 'nepal-mountain-ground';
+    ground.setAttribute('x', String(baseBox.x));
+    ground.setAttribute('y', String(baseBox.y + baseBox.height - 1));
+    ground.setAttribute('width', String(baseBox.width));
+    ground.setAttribute('height', '500');
+    ground.setAttribute('fill', getComputedStyle(base).fill);
+    ground.setAttribute('pointer-events', 'none');
+    ground.style.opacity = '0';
+    base.before(ground);
+    return true;
+  } catch (error) {
+    console.error('Nepal mountain artwork could not load:', error);
+    return false;
+  }
+})();
+
+/* Scroll-driven contour morph. The target may be an SVG path or polygon;
+   getScreenCTM includes the artwork viewBox and the live camera transform. */
 function createNepalMountainMorph(section, marker) {
   'use strict';
   const MORPH = {
@@ -13,7 +76,7 @@ function createNepalMountainMorph(section, marker) {
   const ns = 'http://www.w3.org/2000/svg';
   const mountain = section.querySelector('#nepal-mountain-layer');
   const camera = section.querySelector('#nepal-mountain-camera');
-  const target = section.querySelector('#nepal-mountain-silhouette');
+  const target = section.querySelector('#mountain-base');
   const svg = marker.ownerSVGElement;
   if (!mountain || !camera || !target || !svg) return null;
   const length = target.getTotalLength();
@@ -34,10 +97,10 @@ function createNepalMountainMorph(section, marker) {
     return sum + point.x * next.y - next.x * point.y;
   }, 0);
   const targetPoints = sampled.map((_, i) => sampled[(peak + (winding >= 0 ? i : -i) + sampled.length) % sampled.length]);
-  const details = [...camera.children].filter((node) => node !== target);
+  const details = [...target.parentElement.querySelectorAll('#ice-top-left, #ice-top-right, #ice-falling')];
   const overlay = document.createElementNS(ns, 'path');
   overlay.setAttribute('class', 'nepal-mountain-morph');
-  overlay.setAttribute('fill', target.getAttribute('fill') || 'var(--color-brown)');
+  overlay.setAttribute('fill', getComputedStyle(target).fill || 'var(--color-brown)');
   overlay.setAttribute('pointer-events', 'none');
   overlay.setAttribute('aria-hidden', 'true');
   overlay.style.visibility = 'hidden';

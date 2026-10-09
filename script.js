@@ -499,12 +499,13 @@ function initWarmingChart() {
     description.textContent = `${sentence}${scales}`;
   }
 
-  // Vertical scroll progress, 0 at the top of the sticky sequence and 1 at the end.
+  // Start revealing as the chart section enters the viewport, before it pins.
   function scrollProgress() {
     const distance = scrolly.offsetHeight - window.innerHeight;
     if (distance <= 0) return 1;
-    const travelled = -scrolly.getBoundingClientRect().top;
-    return Math.min(1, Math.max(0, travelled / distance));
+    const entryLead = window.innerHeight * 0.9;
+    const travelled = entryLead - scrolly.getBoundingClientRect().top;
+    return Math.min(1, Math.max(0, travelled / (distance + entryLead)));
   }
 
   // The camera stays still for the first third, then pans the 1965 origin toward the 2030 edge.

@@ -134,7 +134,7 @@ p { max-width: var(--content-width); }
   --warming-track: 180vh;
   position: relative;
   width: calc(100% + 2 * var(--page-frame-width));
-  margin-top: clamp(2rem, 6vh, 4rem);
+  margin-top: 0;
   margin-left: calc(-1 * var(--page-frame-width));
   margin-right: calc(-1 * var(--page-frame-width));
 }
@@ -180,6 +180,7 @@ p { max-width: var(--content-width); }
   padding-inline: max(2vw, calc(var(--page-content-edge) - var(--page-frame-width)));
 }
 #warming {
+  padding-top: 0;
   padding-bottom: 0;
   padding-inline: var(--page-frame-width);
 }
@@ -280,12 +281,13 @@ p { max-width: var(--content-width); }
 #warming .warming-hover-marker.is-glacier { fill: var(--color-grey); }
 /* Timeline annotations: same flat-panel hierarchy as the map readout. */
 #warming .warming-tooltip {
+  --warming-annotation-scale: .8;
   position: absolute;
   z-index: 2;
-  width: clamp(152px, 16vw, 220px);
-  max-width: calc(100% - 16px);
+  width: clamp(122px, 12.8vw, 176px);
+  max-width: calc(100% - 13px);
   margin: 0;
-  padding: 14px 16px 16px;
+  padding: 11px 13px 13px;
   background: var(--color-grey);
   border: none;
   border-radius: 0;
@@ -299,19 +301,19 @@ p { max-width: var(--content-width); }
 }
 #warming .warming-tooltip p { margin: 0; }
 #warming .warming-tooltip .warming-tooltip-year {
-  margin-bottom: 10px;
-  font: 700 clamp(16px, 1.4vw, 22px)/1.15 "Roboto Slab", serif;
+  margin-bottom: 8px;
+  font: 700 clamp(12.8px, 1.12vw, 17.6px)/1.15 "Roboto Slab", serif;
   font-variant-numeric: tabular-nums;
 }
 #warming .warming-tooltip .warming-tooltip-value {
-  margin-bottom: 6px;
-  font: 800 clamp(24px, 2.2vw, 34px)/1.1 "Roboto Flex", sans-serif;
+  margin-bottom: 5px;
+  font: 800 clamp(19.2px, 1.76vw, 27.2px)/1.1 "Roboto Flex", sans-serif;
   font-variant-numeric: tabular-nums;
 }
-#warming .warming-tooltip.is-glacier .warming-tooltip-value { color: var(--color-dark-blue); }
-#warming .warming-tooltip.is-temperature .warming-tooltip-value { color: var(--color-pink); }
+#warming .warming-tooltip.is-glacier .warming-tooltip-value { color: var(--color-light); }
+#warming .warming-tooltip.is-temperature .warming-tooltip-value { color: var(--color-brown); }
 #warming .warming-tooltip-series {
-  font: 400 clamp(11px, .85vw, 13px)/1.3 "Roboto Flex", sans-serif;
+  font: 400 clamp(8.8px, 0.68vw, 10.4px)/1.3 "Roboto Flex", sans-serif;
   text-wrap: balance;
 }
 
@@ -635,7 +637,7 @@ path.glacier-region-boundaries {
 .scene-note { font: 16px "Roboto Flex", sans-serif; fill: var(--color-brown); }
 .scene-footnote { position: absolute; left: 5%; bottom: 20px; margin: 0; font-size: 11px; color: var(--color-brown); }
 .nepal-glacier-caption { z-index: 32; pointer-events: none; }
-#nepal-map-layer, #nepal-mountain-layer, #nepal-mountain-camera, #nepal-ice, #nepal-village-layer, .falling-rock, .village-piece { will-change: transform, opacity; }
+#nepal-map-layer, #nepal-mountain-layer, #nepal-mountain-camera, #ice-falling, .falling-rock, .nepal-water-motion, .nepal-impact-piece, .nepal-person { will-change: transform, opacity; }
 .nepal-narrative { display: flex; flex-direction: column; padding: clamp(28px, 5vh, 64px) 10%; background: var(--color-grey); min-width: 0; }
 .nepal-narrative .title-text-large { color: var(--color-dark-blue); font-size: clamp(25px, 3vw, 45px); margin: 0; flex: 0 0 auto; }
 .nepal-stories { position: relative; flex: 1; min-height: 0; margin-top: 7vh; }
@@ -649,24 +651,43 @@ path.glacier-region-boundaries {
 .nepal-progress i { width: 28px; height: 3px; background: var(--color-brown); opacity: .22; }
 .nepal-progress i.is-active { opacity: 1; background: var(--color-dark-blue); }
 
-/* 06 — Pictogram composition only, deliberately no invented counts. */
+/* 06 — One equal-sized circle for every individual in the supplied totals. */
 .impact-section { background: var(--color-brown); color: var(--color-dark-blue); padding: 9vh 0 7vh; }
-.impact-marks { display: grid; grid-template-columns: repeat(15, minmax(0, 1fr)); gap: 14px 18px; padding-inline: 4%; }
-.impact-mark { appearance: none; padding: 0; margin: 0; border: 0; background: transparent; color: var(--color-pink); cursor: pointer; transform: rotate(-7deg); }
-.impact-mark svg { display: block; width: 100%; max-height: 60px; }
-.impact-mark path { fill: currentColor; }
-.impact-mark-1 { color: var(--color-gold); }
-.impact-mark-2 { color: var(--color-grey); }
-.impact-mark:is(:hover, :focus-visible) { transform: translateY(-5px) rotate(7deg); outline: 2px solid var(--color-light); outline-offset: 5px; }
+.impact-section > .draft-inner { width: 100%; max-width: none; padding-inline: clamp(50px, 2vw, 65px); }
+.impact-marks { padding-inline: 0; }
+.impact-tooltip { position: fixed; z-index: 1000; width: 225px; max-width: calc(100vw - 24px); box-sizing: border-box; padding: 18px 20px; background: var(--color-pink); color: var(--color-brown); pointer-events: none; }
+.impact-tooltip[hidden] { display: none; }
+.impact-tooltip.is-missing { background: var(--color-grey); }
+.impact-tooltip strong { display: block; font-family: "Roboto Slab", serif; font-size: 30px; line-height: 1.15; margin-bottom: 7px; }
+.impact-tooltip span { display: block; font-size: 16px; line-height: 1.3; }
+.impact-tooltip small { display: block; font-size: 11px; line-height: 1.4; margin-top: 14px; }
+#impact-dot-chart { display: block; width: 100%; overflow: visible; }
+.impact-category { fill: var(--color-pink); }
+.impact-category.impact-mark-2 { fill: var(--color-grey); }
+.impact-dot { stroke: var(--color-brown); stroke-width: 2; }
+.impact-dot:hover { fill: var(--color-light); }
+.impact-category:focus-visible { outline: 1px solid var(--color-light); outline-offset: 4px; }
 #impact-detail { min-height: 22px; margin: 32px 0; text-align: center; font-size: 13px; max-width: none; color: var(--color-grey); }
 .impact-section .title-text-large { text-align: center; color: var(--color-dark-blue); font-size: clamp(25px, 3.1vw, 43px); line-height: 1.2; }
 .impact-deaths { color: var(--color-pink); }
-.impact-injuries { color: var(--color-gold); }
+.impact-line { display: block; }
 .impact-missing { color: var(--color-grey); }
-.impact-note { max-width: none; font-size: 12px; text-align: center; color: var(--color-grey); }
-#sources.draft-sources { margin-inline: var(--page-frame-width); padding: 30px 2vw 45px; background: var(--color-brown); color: var(--color-grey); }
-.draft-sources h2 { font-size: 18px; margin: 0 0 12px; }
-.draft-sources p { font-size: 12px; }
+#sources.draft-sources { margin-inline: var(--page-frame-width); padding: clamp(55px, 7vw, 100px) 2vw; background: var(--color-brown); color: var(--color-grey); }
+.footer-columns { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.7fr) minmax(0, 1fr); gap: clamp(32px, 4vw, 72px); align-items: start; }
+.footer-credits { display: grid; gap: 30px; }
+.draft-sources h2 { font-family: "Roboto Slab", serif; font-size: 18px; font-weight: 700; line-height: 1.4; margin: 0 0 10px; }
+.draft-sources p { max-width: none; font-size: 18px; line-height: 1.6; margin: 0; }
+.draft-sources a { color: inherit; overflow-wrap: anywhere; }
+.source-list { margin: 18px 0 0; padding: 0; list-style: none; counter-reset: source; display: grid; gap: 22px; }
+.source-list li { counter-increment: source; }
+.source-list h3 { font-family: "Roboto Slab", serif; font-size: 18px; font-weight: 700; line-height: 1.4; margin: 0 0 4px; }
+.source-list h3::before { content: counter(source) ". "; }
+.source-list p { font-size: 16px; line-height: 1.55; }
+.source-list a { text-decoration: underline; text-underline-offset: 0.18em; }
+@media (max-width: 600px) {
+  .footer-columns { grid-template-columns: minmax(0, 1fr); gap: 45px; }
+  .footer-references { min-height: 100px; }
+}
 
 /* Fallback: all content remains available without scripts. */
 html:not(.sketch-motion) .retreat-section { height: 100svh; }
@@ -709,8 +730,6 @@ html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
   .scene-footnote { font-size: 9px; padding-right: 10px; }
   .nepal-progress { gap: 5px; }
   .nepal-progress i { width: 20px; }
-  .impact-marks { grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 10px; }
-  .impact-mark svg { max-height: 40px; }
   .impact-section .title-text-large { font-size: 24px; }
 }
 @media (max-height: 550px) {
@@ -967,3 +986,100 @@ html:not(.sketch-motion) .nepal-scene { min-height: 800px; }
 html:not(.sketch-motion) .map-journey { height: auto; }
 html:not(.sketch-motion) .map-journey-stage { position: relative; height: auto; }
 html:not(.sketch-motion) .nepal-after-map-journey { margin-top: 0; }
+
+/* 07 — Four warming scenarios, measured against the 2025 glacier count. */
+.future-section { background: var(--color-dark-blue); color: var(--color-brown); padding-block: clamp(65px, 8vw, 120px) clamp(60px, 7vw, 110px); }
+.future-section #future-title { margin: 0 0 44px; }
+.future-intro { width: min(100%, 1000px); margin-inline: auto; padding-inline: 10px; text-align: left; }
+.future-intro p { max-width: none; margin: 0 0 1.2em; }
+.future-scrolly { margin-top: clamp(40px, 5vw, 72px); }
+.future-sticky { position: sticky; top: clamp(12px, 8vh, 72px); z-index: 1; background: var(--color-dark-blue); }
+.future-scroll-track { height: 165vh; pointer-events: none; }
+.future-figure { margin: 0; }
+.future-legend { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px 28px; font-size: 14px; margin: 16px 0 8px; }
+.future-legend span { display: inline-flex; gap: 9px; align-items: center; }
+.future-legend i { width: 12px; height: 12px; display: inline-block; }
+.future-key-lost { background: var(--color-brown); }
+.future-key-remaining { background: var(--color-light); }
+#future-chart svg { display: block; width: 100%; overflow: visible; font-family: "Roboto Flex", sans-serif; }
+.future-axis { stroke: var(--color-brown); stroke-width: 1.5; }
+.future-tick, .future-axis-title, .future-scenario { fill: var(--color-brown); }
+.future-bar-part { cursor: help; }
+.future-bar-part.is-lost { fill: var(--color-brown); }
+.future-bar-part.is-remaining { fill: var(--color-light); }
+.future-bar-part:focus-visible { outline: 2px solid var(--color-grey); outline-offset: 3px; }
+#future-chart-caption { max-width: none; margin-top: 0; font-size: 12px; line-height: 1.5; text-align: center; }
+.future-ending { text-align: center; margin: clamp(55px, 7vw, 100px) 0 0; }
+.future-tooltip { position: fixed; z-index: 1000; width: 270px; max-width: calc(100vw - 24px); padding: 22px 24px; background: var(--color-grey); color: var(--color-brown); pointer-events: none; }
+.future-tooltip[hidden] { display: none; }
+.future-tooltip small { display: block; font-size: 12px; line-height: 1.4; }
+.future-tooltip strong { display: block; font-family: "Roboto Slab", serif; font-size: 36px; line-height: 1.1; margin: 13px 0 5px; }
+.future-tooltip span { display: block; font-size: 15px; line-height: 1.4; }
+.future-tooltip .future-tooltip-percent { font-size: 32px; color: var(--color-light); margin-top: 18px; }
+@media (max-width: 760px) {
+  .future-section .title-text-large { font-size: 27px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .future-sticky { position: relative; top: auto; }
+  .future-scroll-track { display: none; }
+}
+
+/* Match the Nepal story subheading size at the same breakpoints. */
+.future-section .future-ending.title-text-large { font-size: 24px; }
+@media (max-width: 760px), (max-height: 550px) {
+  .future-section .future-ending.title-text-large { font-size: 18px; }
+}
+
+/* 01 — Authored glacier anatomy; the artwork bleeds into the page frame. */
+#hero.draft-section { padding-inline: 0; }
+#hero .section-inner { padding-inline: 2vw; }
+#hero.draft-section h1 { font-family: "Roboto Slab", serif; font-weight: 600; font-size: clamp(36px, 4.5vw, 72px); line-height: 1.12; }
+#hero.draft-section h2 { position: relative; z-index: 22; margin-top: clamp(50px, 7vw, 100px); pointer-events: none; }
+.hero-anatomy { position: relative; z-index: 21; width: calc(100% + 4vw); margin: -42px -2vw 0; }
+.hero-anatomy-map { position: relative; }
+.hero-mountain-art { display: block; width: 100%; height: auto; }
+.hero-anatomy-leader { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.hero-anatomy-leader path { fill: none; stroke: var(--color-gold); stroke-width: 3; }
+.hero-anatomy-points { position: absolute; inset: 0; pointer-events: none; }
+.anatomy-point { position: absolute; left: var(--point-x); top: var(--point-y); width: 44px; height: 44px; transform: translate(-50%, -50%); border: 0; padding: 0; background: transparent; cursor: pointer; pointer-events: auto; border-radius: 50%; }
+.anatomy-point::before { content: ""; position: absolute; inset: 50% auto auto 50%; transform: translate(-50%, -50%); width: clamp(18px, 2vw, 30px); height: clamp(18px, 2vw, 30px); background: var(--color-pink); border-radius: 50%; }
+.anatomy-point:focus-visible { outline: 2px solid var(--color-gold); outline-offset: 1px; }
+.anatomy-annotation { position: absolute; top: 10%; left: 44%; width: clamp(235px, 22vw, 315px); padding: 21px 23px; background: var(--color-gold); color: var(--color-brown); }
+.anatomy-annotation h3 { text-align: center; font-size: clamp(19px, 1.7vw, 25px); line-height: 1.18; margin: 0 0 12px; }
+.anatomy-annotation p { max-width: none; font-size: clamp(14px, 1.15vw, 17px); margin: 0; line-height: 1.4; }
+@media (max-width: 760px) {
+  #hero.draft-section h1 { font-size: clamp(30px, 7vw, 48px); }
+  #hero.draft-section h2 { margin-top: 40px; }
+}
+@media (max-width: 600px) {
+  .hero-anatomy { margin-top: 10px; }
+  .anatomy-annotation { position: relative; top: auto !important; left: auto !important; width: calc(100% - 32px); margin: 18px 16px 0; min-height: 138px; }
+  .hero-anatomy-leader { display: none; }
+}
+
+/* The hero is its own stacking context, behind the fixed grey columns. */
+#hero.draft-section { isolation: isolate; z-index: 0; }
+.hero-stage { position: relative; }
+#hero.hero-scroll { height: var(--hero-scroll-height); padding: 0; }
+.hero-scroll .hero-stage { position: sticky; top: 0; height: var(--hero-stage-height); overflow: clip; background: var(--color-dark-blue); }
+#hero.hero-scroll .section-inner { max-width: none; }
+#hero.hero-scroll #hero-title { position: absolute; z-index: 3; top: clamp(36px, 6svh, 76px); left: 3vw; right: 3vw; max-width: none; margin: 0; font-size: clamp(40px, 6.5vw, 120px); line-height: 1.08; pointer-events: none; will-change: opacity; }
+#hero.hero-scroll .hero-anatomy-copy { position: absolute; z-index: 3; left: 3vw; top: clamp(48px, 8svh, 90px); width: min(36%, 520px); opacity: 0; pointer-events: none; }
+#hero .hero-anatomy-copy #hero-anatomy-title { position: static; margin: 0 0 24px; }
+.hero-introduction p { max-width: none; margin: 0 0 1.2em; }
+.hero-introduction p:last-child { margin-bottom: 0; }
+.hero-scroll .hero-anatomy { position: absolute; z-index: 1; top: var(--hero-art-top, 140px); left: 7vw; width: calc(120% + 4.8vw); margin: 0; transform-origin: 0 0; will-change: transform; }
+#hero.hero-scroll .hero-bottom { position: absolute; z-index: 3; top: calc(100svh - 100px); left: 3vw; padding: 0; width: auto; }
+#hero.hero-scroll .scroll-indicator { margin: 0; font-size: clamp(18px, 2vw, 27px); }
+.hero-scroll .hero-anatomy-points, .hero-scroll .hero-anatomy-leader, .hero-scroll .anatomy-annotation { opacity: 0; }
+@media (max-width: 600px) {
+  #hero.hero-scroll #hero-title { font-size: clamp(32px, 7.4vw, 45px); top: 7svh; }
+  #hero.hero-scroll .hero-anatomy-copy { top: 48px; }
+  #hero.hero-scroll .hero-bottom { top: calc(100svh - 88px); }
+}
+
+/* Narrow screens keep the copy above the artwork, rather than squeezing it beside it. */
+@media (max-width: 760px) {
+  #hero.hero-scroll .hero-anatomy-copy { width: calc(100% - 6vw); }
+  .hero-scroll .hero-anatomy { left: 1vw; }
+}

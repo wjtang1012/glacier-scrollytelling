@@ -13,27 +13,49 @@
   <script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/d3-geo-projection@4.0.0/dist/d3-geo-projection.min.js" defer></script>
   <script src="script.js" defer></script>
+  <script src="glacier-anatomy.js" defer></script>
+  <script src="nepal-flood-sequence.js" defer></script>
+  <script src="nepal-mountain-morph.js" defer></script>
   <script src="sketch.js" defer></script>
   <script src="region-panel.js" defer></script>
-  <script src="nepal-mountain-morph.js" defer></script>
   <script src="map-nepal-transition.js" defer></script>
+  <script src="future-glaciers.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#warming">Skip introduction</a>
   <main id="story">
     <section id="hero" class="story-section hero draft-section" aria-labelledby="hero-title">
+      <div class="hero-stage">
       <div class="section-inner">
         <h1 id="hero-title">WHAT HAPPENS WHEN<br>THE ICE DISAPPEARS?</h1>
-        <h2 class="title-text-large">This is a glacier.</h2>
-        <svg class="draft-hero-art" viewBox="0 0 1100 650" role="img" aria-label="Mountain, glacier and meltwater">
-          <path fill="var(--color-light-blue)" d="m313 495-85 48-102-8-83 25-28 38 44 30 132 12 110-22 21-43-68-30 114-44Z"/>
-          <g data-layer="mountain-rock" fill="var(--color-brown)"><path d="M25 490 185 354 280 310 385 180 475 222 638 42 772 250 847 177 986 390 1040 495Z"/></g>
-<g data-layer="mountain-snow" fill="var(--color-light)"><path d="m185 354 95-44 105-130 40 30-45 65-37-13-54 87-35-13-50 41Z"/><path d="m458 221 73-52 107-127 71 105-45-29-23 28-38-18-36 66-35-12-37 58Z"/><path d="m755 258 92-81 65 109-46-21-15 23-35-47-19 50Z"/><path d="m900 293 33 20 53 77-55-24-14-31Z"/></g>
-<path data-layer="glacier" fill="var(--color-light)" d="m619 161-44 74-68 20-43 96-83 37-79 115 132 22 127-60 79-97 91-45-29-109-39 13-18-71-18 34Z"/>
-<g data-layer="moraine" fill="var(--color-grey)"><path d="m299 466 21-9 15 23-12 23-25-6Z"/><path d="m427 409 28 5 7 40-24 6Z"/><path d="m663 384 23-8 8 20-7 24-27-8Z"/><path d="m728 445 37-2 15 22-20 18-30-5Z"/><path d="m190 473 32 6 6 20-27 9Z"/></g>
-        </svg>
-        <div class="draft-intro-copy"><div class="draft-copy " role="note" aria-label="Glacier introduction / freshwater / everyday life"><span class="draft-label">Glacier introduction / freshwater / everyday life</span><span class="draft-lines" aria-hidden="true"><i></i><i></i><i></i></span></div></div>
-        <a class="scroll-indicator" href="#warming">Scroll to explore <span aria-hidden="true">↓</span></a>
+        <div class="hero-anatomy-copy">
+          <h2 id="hero-anatomy-title" class="title-text-large">This is a glacier.</h2>
+          <div class="hero-introduction small-text-san-serif">
+            <p>A glacier is a massive body of ice formed from layers of snow compressed over many years. Under its own weight, it slowly moves across the landscape, shaping mountains and valleys along the way.</p>
+            <p>Glaciers store much of the world's freshwater and release meltwater that feeds rivers and supports ecosystems downstream. From mountain habitats to distant communities, life depends on the water they provide.</p>
+          </div>
+        </div>
+      </div>
+      <figure class="hero-anatomy" aria-label="Anatomy of a glacier">
+        <div class="hero-anatomy-map">
+          <img class="hero-mountain-art" src="./assets/svg/mountain-main.svg" width="1284.51" height="931.84" alt="A mountain glacier flowing downhill toward a meltwater lake, with exposed rocks along its sides." fetchpriority="high">
+          <svg class="hero-anatomy-leader" aria-hidden="true"><path/></svg>
+          <div class="hero-anatomy-points" role="group" aria-label="Explore five parts of a glacier">
+            <button class="anatomy-point is-active" type="button" data-part="accumulation" style="--point-x:55.662%;--point-y:39.385%" aria-label="Accumulation Area" aria-pressed="true" aria-controls="anatomy-annotation"></button>
+            <button class="anatomy-point" type="button" data-part="ablation" style="--point-x:42.429%;--point-y:61.491%" aria-label="Ablation Area" aria-pressed="false" aria-controls="anatomy-annotation"></button>
+            <button class="anatomy-point" type="button" data-part="moraines" style="--point-x:13.235%;--point-y:65.569%" aria-label="Moraines" aria-pressed="false" aria-controls="anatomy-annotation"></button>
+            <button class="anatomy-point" type="button" data-part="terminus" style="--point-x:33.476%;--point-y:69.432%" aria-label="Terminus" aria-pressed="false" aria-controls="anatomy-annotation"></button>
+            <button class="anatomy-point" type="button" data-part="lake" style="--point-x:19.073%;--point-y:87.461%" aria-label="Glacial Lake" aria-pressed="false" aria-controls="anatomy-annotation"></button>
+          </div>
+        </div>
+        <figcaption id="anatomy-annotation" class="anatomy-annotation" aria-live="polite" aria-atomic="true">
+          <h3 class="small-text-normal">Accumulation Area</h3>
+          <p class="caption-text-san-serif">High on the glacier, more snow collects than melts each year. Over time, the buried snow compresses into glacier ice.</p>
+        </figcaption>
+      </figure>
+      <div class="section-inner hero-bottom">
+        <a class="scroll-indicator small-text-normal" href="#hero-anatomy-title">Scroll to reveal the story.</a>
+      </div>
       </div>
     </section>
 
@@ -130,18 +152,14 @@
             <g id="nepal-map-layer">
               <text x="90" y="427" class="scene-label">Nepal</text><text x="90" y="456" class="scene-note">Home to more than 3,000 glaciers.</text>
             </g>
-            <g id="nepal-mountain-layer">
+            <!-- Static 125% framing; all scroll animation stays on the inner camera. -->
+            <g id="nepal-mountain-layer" transform="translate(340 400) scale(1.25) translate(-340 -400)">
               <g id="nepal-mountain-camera">
-                <!-- Morph target: keep this ID on the single closed outer contour when replacing the mountain SVG. -->
-                <path id="nepal-mountain-silhouette" fill="var(--color-brown)" d="M-65 555 39 285 131 114 208 166 281 265 359 198 434 320 513 247 599 328 753 540v138H-65Z"/>
-                <g fill="var(--color-light)"><path d="m39 285 92-171 45 37-43 69-28-24-37 116Z"/><path d="m174 151 34 15 73 99-19 23-32-67-23 40Z"/><path d="m298 251 61-53 75 122-35 10-36-82-29 40Z"/><path d="m470 295 43-48 58 69-17 27-27-25-14-37-15 43Z"/></g>
-                <path id="nepal-ice" fill="var(--color-light)" d="m205 238 37 76 45-17 30 64-11 89-36 68-11 72-69 3 6-57 29-70-11-82-46-62Z"/>
-                <g class="falling-rock" data-rock="0"><path fill="var(--color-brown)" d="m234 321 24-7 17 26-9 18-29-6Z"/></g><g class="falling-rock" data-rock="1"><path fill="var(--color-brown)" d="m390 333 24-7 17 26-9 18-29-6Z"/></g><g class="falling-rock" data-rock="2"><path fill="var(--color-brown)" d="m270 376 24-7 17 26-9 18-29-6Z"/></g><g class="falling-rock" data-rock="3"><path fill="var(--color-brown)" d="m447 406 24-7 17 26-9 18-29-6Z"/></g><g class="falling-rock" data-rock="4"><path fill="var(--color-brown)" d="m195 430 24-7 17 26-9 18-29-6Z"/></g><g class="falling-rock" data-rock="5"><path fill="var(--color-brown)" d="m350 465 24-7 17 26-9 18-29-6Z"/></g>
+                <!-- Authored layers are loaded once from assets/svg/nepal-glacier-mountain.svg. -->
               </g>
             </g>
-            <g id="nepal-village-layer"><g class="village-piece" data-kick="0"><path fill="var(--color-grey)" d="M61 630h60v67h-60Z"/><path fill="var(--color-gold)" d="M69 618h44v24h-44Z"/></g><g class="village-piece" data-kick="1"><path fill="var(--color-grey)" d="M142 654h70v43h-70Z"/><path fill="var(--color-gold)" d="M150 642h54v24h-54Z"/></g><g class="village-piece" data-kick="2"><path fill="var(--color-grey)" d="M227 618h52v79h-52Z"/><path fill="var(--color-gold)" d="M235 606h36v24h-36Z"/></g><g class="village-piece" data-kick="3"><path fill="var(--color-grey)" d="M303 655h68v42h-68Z"/><path fill="var(--color-gold)" d="M311 643h52v24h-52Z"/></g><g class="village-piece" data-kick="4"><path fill="var(--color-grey)" d="M393 624h69v73h-69Z"/><path fill="var(--color-gold)" d="M401 612h53v24h-53Z"/></g><g class="village-piece" data-kick="5"><path fill="var(--color-grey)" d="M495 650h65v47h-65Z"/><path fill="var(--color-gold)" d="M503 638h49v24h-49Z"/></g><g class="village-piece" data-kick="6"><path fill="var(--color-grey)" d="M575 628h43v69h-43Z"/><path fill="var(--color-gold)" d="M583 616h27v24h-27Z"/></g><g class="village-piece" data-kick="7"><path fill="var(--color-pink)" d="M43 718q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="8"><path fill="var(--color-pink)" d="M124 703q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="9"><path fill="var(--color-pink)" d="M181 736q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="10"><path fill="var(--color-pink)" d="M255 714q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="11"><path fill="var(--color-pink)" d="M334 737q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="12"><path fill="var(--color-pink)" d="M409 711q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="13"><path fill="var(--color-pink)" d="M471 736q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="14"><path fill="var(--color-pink)" d="M542 707q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="15"><path fill="var(--color-pink)" d="M595 732q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="16"><path fill="var(--color-pink)" d="M70 667q9-10 17 0l-2 18q-9 7-16-2Z"/></g><g class="village-piece" data-kick="17"><path fill="var(--color-pink)" d="M528 672q9-10 17 0l-2 18q-9 7-16-2Z"/></g></g>
           </svg>
-          <p class="scene-footnote nepal-glacier-caption caption-text-san-serif" style="opacity: 0">Glacier distribution around 2000<br>Source: Randolph Glacier Inventory 7.0<sup> 1</a></sup></p>
+          <p class="scene-footnote nepal-glacier-caption caption-text-san-serif" style="opacity: 0">Glacier distribution around 2000<br>Source: Randolph Glacier Inventory 7.0</p>
         </div>
         <div class="nepal-narrative">
           <h2 id="nepal-title" class="title-text-large">And what can happen when a glacier collapse triggers a deadly disaster.</h2>
@@ -185,15 +203,108 @@
 
     <section id="human-impact" class="draft-section impact-section" aria-labelledby="impact-title">
       <div class="draft-inner">
-        <div class="impact-marks" role="group" aria-label="Pictogram layout placeholder, marks do not represent counts"><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-0" type="button" aria-label="Deaths: details pending" data-impact="Deaths"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-1" type="button" aria-label="Injuries: details pending" data-impact="Injuries"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button><button class="impact-mark impact-mark-2" type="button" aria-label="Missing persons: details pending" data-impact="Missing persons"><svg viewBox="0 0 30 46" aria-hidden="true"><path d="M9 4Q22-2 25 11L21 35Q14 47 5 37L3 17Z"/></svg></button></div>
-        <p id="impact-detail" class="caption-text-san-serif" role="status">Hover or focus a symbol · details pending</p>
-        <h2 id="impact-title" class="title-text-large">As of <span class="impact-date">[date]</span>,<br><span class="impact-deaths">— people died</span>, <span class="impact-injuries">— were injured</span>,<br>and <span class="impact-missing">— were still missing.</span></h2>
-        <p class="impact-note caption-text-san-serif">Pictogram layout only · figures &amp; sources pending</p>
+        <div class="impact-marks">
+          <svg id="impact-dot-chart" role="group" aria-label="1,457 pink dots for bodies and remains recovered; 4,720 grey dots for people still missing. One dot represents one individual.">
+            <g class="impact-category impact-mark-0" data-count="1457" data-impact="1,457 bodies and remains recovered" tabindex="0" role="img" aria-label="1,457 bodies and remains recovered"></g>
+            <g class="impact-category impact-mark-2" data-count="4720" data-impact="4,720 people still missing" tabindex="0" role="img" aria-label="4,720 people still missing"></g>
+          </svg>
+        </div>
+        <p id="impact-detail" class="caption-text-san-serif" role="status">One dot represents one individual</p>
+        <h2 id="impact-title" class="title-text-large">
+          <span class="impact-line">As of <time datetime="2026-10-08">8 October 2026</time>,</span>
+          <span class="impact-line"><span class="impact-deaths">1,457</span> bodies and remains recovered,</span>
+          <span class="impact-line"><span class="impact-missing">4,720</span> people still missing.</span>
+        </h2>
+      </div>
+    </section>
+    <section id="glacier-future" class="draft-section future-section" aria-labelledby="future-title">
+      <div class="draft-inner">
+        <h2 id="future-title" class="title-text-large">If global temperatures continue to rise, how much ice will be left by 2100?</h2>
+        <div class="future-intro small-text-san-serif">
+          <p>By the end of this century, the world's glaciers could look dramatically different. Scientists project that between 55% and 91% of the world's glaciers could disappear by 2100, compared with 2025, depending on how much the planet warms. Even if global warming is limited to 1.5°C, about 55% of today's glaciers could be gone. At 4°C of warming, that figure could rise to about 91%.</p>
+          <p>Hover over either section of each bar to explore the projected number of glaciers lost and remaining by 2100.</p>
+        </div>
+        <div class="future-scrolly">
+          <div class="future-sticky">
+            <figure class="future-figure" aria-labelledby="future-chart-caption">
+              <div id="future-chart" aria-busy="true"><p class="caption-text-san-serif">Loading projections…</p></div>
+              <div class="future-legend caption-text-san-serif"><span><i class="future-key-lost"></i>Lost by 2100</span><span><i class="future-key-remaining"></i>Remaining in 2100</span></div>
+              <figcaption id="future-chart-caption" class="caption-text-san-serif">Median glacier counts in 2100 · 2025 baseline: 211,490 glaciers.</figcaption>
+              <noscript><p>Please enable JavaScript to view the glacier projections.</p></noscript>
+            </figure>
+          </div>
+          <div class="future-scroll-track" aria-hidden="true"></div>
+        </div>
+        <p class="future-ending title-text-large">The future of the world's glaciers is not yet fixed.<br>Every fraction of a degree matters.</p>
       </div>
     </section>
   </main>
   <footer id="sources" class="draft-sources" aria-labelledby="sources-title">
-    <div class="draft-inner"><h2 id="sources-title" class="small-text-normal">Sources</h2><p class="caption-text-san-serif">[Datasets, event sources &amp; illustration credits]</p></div>
+    <div class="draft-inner footer-columns">
+      <div class="footer-credits">
+        <section class="footer-credit-group" aria-labelledby="designer-title">
+          <h2 id="designer-title">Designed by</h2>
+          <p>Wenjia Tang<br>Aalto University<br>MA Visual Communication Design<br>Introduction to Information Design</p>
+        </section>
+        <section class="footer-credit-group" aria-labelledby="supervisors-title">
+          <h2 id="supervisors-title">Supervised by</h2>
+          <p>Jonatan Hildén<br>Rupesh Vyas</p>
+        </section>
+        <section class="footer-credit-group" aria-labelledby="fonts-title">
+          <h2 id="fonts-title">Fonts Used</h2>
+          <p>Roboto Slab<br>Roboto Flex</p>
+        </section>
+        <section class="footer-credit-group" aria-labelledby="contact-title">
+          <h2 id="contact-title">Contact</h2>
+          <p><a href="mailto:wenjia.tang@aalto.fi">wenjia.tang@aalto.fi</a></p>
+        </section>
+      </div>
+      <section class="footer-references" aria-labelledby="sources-title">
+        <h2 id="sources-title">Sources</h2>
+        <ol class="source-list">
+          <li>
+            <h3>Global Glacier Mass Change</h3>
+            <p>The GlaMBIE Team. (2025). Community estimate of global glacier mass changes from 2000 to 2023. Nature, 639, 382–388. <a href="https://doi.org/10.1038/s41586-024-08545-z">https://doi.org/10.1038/s41586-024-08545-z</a></p>
+          </li>
+          <li>
+            <h3>Glacier Mass Balance Data &amp; Code</h3>
+            <p>Jakob, L., Dubber, S., Goss, T., Horton, A., Dussaillant, I., Nussbaumer, S., Gourmelen, N., &amp; Zemp, M. (2024). Glacier Mass Balance Intercomparison Exercise (GlaMBIE) code v1.0.118 (Version 1.0.118) [Computer software]. Zenodo. <a href="https://doi.org/10.5281/zenodo.14186227">https://doi.org/10.5281/zenodo.14186227</a></p>
+          </li>
+          <li>
+            <h3>Global Temperature Data</h3>
+            <p>National Aeronautics and Space Administration (NASA). (n.d.). Global temperature. NASA Science. <a href="https://science.nasa.gov/earth/explore/earth-indicators/global-temperature/">https://science.nasa.gov/earth/explore/earth-indicators/global-temperature/</a></p>
+          </li>
+          <li>
+            <h3>Global Glacier Inventory</h3>
+            <p>RGI 7.0 Consortium. (2023). Randolph Glacier Inventory – A dataset of global glacier outlines, version 7.0 [Data set]. National Snow and Ice Data Center (NSIDC). <a href="https://doi.org/10.5067/f6jmovy5navz">https://doi.org/10.5067/f6jmovy5navz</a></p>
+          </li>
+          <li>
+            <h3>World Map SVG</h3>
+            <p>Wikimedia Commons contributors. (n.d.). BlankMap-World.svg [SVG map]. Wikimedia Commons. <a href="https://commons.wikimedia.org/wiki/File:BlankMap-World.svg">https://commons.wikimedia.org/wiki/File:BlankMap-World.svg</a></p>
+          </li>
+          <li>
+            <h3>Global Glacier Regions</h3>
+            <p>Global Terrestrial Network for Glaciers (GTN-G). (2023). GTN-G Glacier Regions [Data set]. <a href="https://doi.org/10.5904/gtng-glacreg-2023-07">https://doi.org/10.5904/gtng-glacreg-2023-07</a></p>
+          </li>
+          <li>
+            <h3>Nepal Flood Casualty Data</h3>
+            <p>Nepal Police. (n.d.). Official flood casualty report [News report]. <a href="https://nepalpolice.gov.np/news/10690/">https://nepalpolice.gov.np/news/10690/</a></p>
+          </li>
+          <li>
+            <h3>Future Glacier Extinction Projections</h3>
+            <p>Van Tricht, L., Zekollari, H., Huss, M., et al. (2026). Peak glacier extinction in the mid-twenty-first century. Nature Climate Change, 16, 143–147. <a href="https://doi.org/10.1038/s41558-025-02513-9">https://doi.org/10.1038/s41558-025-02513-9</a></p>
+          </li>
+          <li>
+            <h3>Glacier Extinction Projection Data &amp; Code</h3>
+            <p>Van Tricht, L. (2025). LanderVT/glacier-extinction: Peak Glacier Extinction in the mid-21st Century (Version 1.0.0) [Computer software]. Zenodo. <a href="https://doi.org/10.5281/zenodo.17416014">https://doi.org/10.5281/zenodo.17416014</a></p>
+          </li>
+        </ol>
+      </section>
+      <section class="footer-ai" aria-labelledby="ai-title">
+        <h2 id="ai-title">AI Assistance &amp; Production</h2>
+        <p>This website was developed within a limited timeframe as a school project. ChatGPT was used to assist with text generation and editing, while OpenAI Codex supported coding and implementation. All visual design, storytelling, and creative decisions were made by the author.</p>
+      </section>
+    </div>
   </footer>
   <div class="page-frame page-frame-left" aria-hidden="true"></div>
   <div class="page-frame page-frame-right" aria-hidden="true"></div>
